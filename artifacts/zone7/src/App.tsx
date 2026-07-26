@@ -4,7 +4,7 @@ import { Cursor } from './components/Cursor';
 import { Navigation } from './components/Navigation';
 import { Hero } from './components/Hero';
 import { Stats } from './components/Stats';
-import { VideoWorks } from './components/VideoWorks';
+import { FeaturedWork } from './components/FeaturedWork';
 import { Services } from './components/Services';
 import { BrandGallery } from './components/BrandGallery';
 import { Process } from './components/Process';
@@ -21,7 +21,7 @@ function HomePage() {
     <main className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
       <Hero />
       <Stats />
-      <VideoWorks />
+      <FeaturedWork />
       <Services />
       <BrandGallery />
       <Process />
