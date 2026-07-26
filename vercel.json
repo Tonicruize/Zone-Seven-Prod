@@ -1,11 +1,8 @@
 {
-  "buildCommand": "pnpm --filter @workspace/zone7 run build",
-  "outputDirectory": "artifacts/zone7/dist/public",
+  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/zone7 run build && cp -r artifacts/zone7/dist/public dist",
+  "outputDirectory": "dist",
   "installCommand": "pnpm install",
   "framework": null,
-  "env": {
-    "BASE_PATH": "/"
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
