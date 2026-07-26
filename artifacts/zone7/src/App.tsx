@@ -4,7 +4,7 @@ import { Cursor } from './components/Cursor';
 import { Navigation } from './components/Navigation';
 import { Hero } from './components/Hero';
 import { Stats } from './components/Stats';
-import { FeaturedWork } from './components/FeaturedWork';
+import { VideoWorks } from './components/VideoWorks';
 import { Services } from './components/Services';
 import { BrandGallery } from './components/BrandGallery';
 import { Process } from './components/Process';
