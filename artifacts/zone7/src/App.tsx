@@ -21,7 +21,7 @@ function HomePage() {
     <main className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
       <Hero />
       <Stats />
-      <FeaturedWork />
+      <VideoWorks />
       <Services />
       <BrandGallery />
       <Process />
