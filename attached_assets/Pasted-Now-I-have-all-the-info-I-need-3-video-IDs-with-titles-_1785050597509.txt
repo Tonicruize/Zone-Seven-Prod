@@ -1,0 +1,23 @@
+Now I have all the info I need:
+
+3 video IDs with titles:
+4xpww6rnz_w — "Dremo - Man 2 Man (Official Visualizer)"
+OAHZE1gqIhY — "Dremo - Wife Material (Official Visualizer)"
+H3JXXYGpqNU — "SMG x Teni x The Entertainers - Labubu (Official Visualizer)"
+Now let me build:
+
+A dramatically upgraded Hero
+A new VideoWorks section replacing FeaturedWork
+For the Hero, I'm designing a full-height layout with the content anchored to the left side and plenty of breathing room. There's an "EST. 2019" label in the top-left with a gold accent border, and a thin vertical gold line running down the left edge for an editorial feel. The headline stacks dramatically with "WE DON'T SHOOT VIDEOS. WE CREATE CULTURE." where "CULTURE." pops in the primary gold color. Below that sits a horizontal services strip with dots, then a "WATCH REEL" CTA with an underline, and at the bottom a "SCROLL" indicator.
+
+The background features a large star or eye graphic positioned far right with a subtle golden glow behind it. On mobile, everything stacks cleanly while keeping the massive headline and centering the background graphic at reduced opacity.
+
+For VideoWorks, I'm creating a section with "SELECTED WORKS" as a small label, then a large featured video (01) with its title below, followed by two videos side by side (02, 03). Each video gets a thin gold top border, a number label, a 16:9 YouTube iframe, and the title underneath. A thick bottom border cleanly separates this section from what comes next.
+
+Building the Hero component... Writing Hero component... Writing component animations... Writing component markup... Writing the button and animations... Finishing the scroll indicator with a label, then adding a footer with the production company name and copyright. Now I'm moving on to build out the VideoWorks component to replace FeaturedWork, starting with a section header for "SELECTED WORKS" positioned at the top-left.
+
+The layout will have a thin gold divider line, then a large featured video taking up most of the width with metadata alongside it, followed by two smaller videos arranged in columns below. Each video will be embedded as a 16:9 iframe with dark borders, and I'll include title and artist information beneath them.
+
+Writing the VideoWorks component... Writing component markup... Writing component markup... Writing component layout...
+
+Got everything — 3 videos with titles. Now building both upgrades in parallel:
