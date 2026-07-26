@@ -1,0 +1,425 @@
+Creative Direction
+Theme
+
+Dark Luxury × Cinematic × Editorial
+
+Not "production company."
+
+More like
+
+"The people behind the videos everyone is talking about."
+
+Color Palette
+Background
+#070707
+
+Secondary
+#111111
+
+Cards
+#171717
+
+Text
+#F8F8F8
+
+Muted Text
+#9B9B9B
+
+Accent
+#D4B483 (Warm Gold)
+
+Hover
+#FFFFFF
+
+No bright colors.
+
+Let the videos provide the color.
+
+Typography
+
+Heading
+
+Neue Montreal
+
+or
+
+Satoshi Bold
+
+or
+
+General Sans
+
+Body
+
+Inter
+
+Spacing should feel like Apple.
+
+Homepage Layout
+HERO
+
+Entire screen.
+
+Autoplay reel.
+
+Muted.
+
+No controls.
+
+No YouTube.
+
+Imagine this...
+
+────────────────────────────────
+
+                         ZONE7
+
+              STORIES IN MOTION
+
+     Music Videos • Commercials
+      Creative Direction • Films
+
+            [ WATCH REEL ]
+
+────────────────────────────────
+
+Background:
+
+Fast cuts.
+
+Smoke.
+
+Camera rigs.
+
+Drone shots.
+
+Models.
+
+Artists.
+
+Lens flares.
+
+Behind-the-scenes.
+
+Beautiful color grading.
+
+Navigation
+
+ZONE7
+
+WORK
+
+SERVICES
+
+ABOUT
+
+CONTACT
+
+BOOK
+
+Book button outlined in gold.
+
+Scroll Down
+
+Instead of text...
+
+The first thing appears.
+
+Featured Work
+
+Huge.
+
+██████████████████████
+
+PROJECT
+
+DREMO
+
+Music Video
+
+→ Watch
+
+██████████████████████
+
+Hover
+
+Video starts playing.
+
+Image zooms.
+
+Second project.
+
+Third project.
+
+Fourth.
+
+Alternating layout.
+
+Every project fills almost the screen.
+
+Numbers
+
+Minimal.
+
+25+
+
+Projects
+
+15
+
+Artists
+
+8
+
+Countries
+
+100M+
+
+Views
+
+Animated counting.
+
+Services
+
+Instead of icons.
+
+Editorial cards.
+
+Music Videos
+
+We create visuals
+people replay.
+
+───────────────
+
+Commercials
+
+Stories that sell.
+
+───────────────
+
+Creative Direction
+
+From concept to final frame.
+BTS Section
+
+Massive cinematic image.
+
+Camera operator.
+
+Smoke.
+
+Lights.
+
+Crew.
+
+One sentence.
+
+Every frame
+is intentional.
+Testimonials
+
+Large quotes.
+
+"Working with Zone7
+changed my career."
+
+— Artist
+Process
+
+Horizontal.
+
+01
+
+Discovery
+
+↓
+
+02
+
+Concept
+
+↓
+
+03
+
+Production
+
+↓
+
+04
+
+Post
+
+↓
+
+05
+
+Delivery
+
+Very clean.
+
+Instagram
+
+Huge masonry grid.
+
+Beautiful.
+
+Editorial.
+
+No borders.
+
+CTA
+
+Black.
+
+Huge.
+
+Ready to create
+something unforgettable?
+
+BOOK YOUR PROJECT
+
+Gold outline button.
+
+Footer
+
+Very minimal.
+
+ZONE7
+
+Instagram
+
+YouTube
+
+TikTok
+
+Email
+
+©2026
+Animations
+
+Nothing should move fast.
+
+Everything should glide.
+
+Examples
+
+Logo fades.
+
+Videos scale.
+
+Cards zoom.
+
+Text slides.
+
+Numbers count.
+
+Cursor enlarges.
+
+Magnetic buttons.
+
+Smooth scrolling.
+
+Think Apple.
+
+The Hero
+
+This is where people fall in love.
+
+Instead of
+
+Hello
+Welcome
+
+Use
+
+WE DON'T SHOOT VIDEOS.
+
+WE CREATE CULTURE.
+
+or
+
+EVERY FRAME
+TELLS A STORY.
+
+or
+
+VISUALS
+THAT OUTLIVE TRENDS.
+Mobile
+
+Never stack everything awkwardly.
+
+Instead
+
+Hero
+
+↓
+
+Swipe projects
+
+↓
+
+Testimonials
+
+↓
+
+Book
+
+Everything thumb-friendly.
+
+What Makes Premium Websites Feel Premium
+
+The difference isn't flashy effects—it's restraint.
+
+Large, confident typography with plenty of breathing room.
+Full-screen visuals that immerse visitors.
+Fewer words, but stronger messaging.
+Consistent spacing and alignment.
+Smooth, purposeful animations instead of constant motion.
+Every interaction feels intentional.
+My Ideal Homepage Wireframe
+┌────────────────────────────────────────────┐
+│ ZONE7                             BOOK NOW │
+├────────────────────────────────────────────┤
+│                                            │
+│      FULLSCREEN CINEMATIC SHOWREEL         │
+│                                            │
+│         WE DON'T SHOOT VIDEOS.             │
+│         WE CREATE CULTURE.                 │
+│                                            │
+│             [ WATCH REEL ]                 │
+│                                            │
+└────────────────────────────────────────────┘
+
+        Selected Work
+┌────────────────────────────────────────────┐
+│  Large cinematic thumbnail                 │
+│  Artist • Title • Year          → View     │
+└────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────┐
+│  Large cinematic thumbnail                 │
+│  Brand • Campaign • Role         → View    │
+└────────────────────────────────────────────┘
+
+      About Zone7
+"Visual storytelling built for artists,
+brands, and culture."
+
+      Services
+Music Videos • Commercials • Photography
+Creative Direction • Post Production
+
+      Behind the Scenes
+[Immersive full-width image]
+
+      Trusted By
+[Artist & brand logos]
+
+      Let's Make Something Unforgettable
+          [BOOK YOUR PROJECT]
+
+────────────────────────────────────────────
+ZONE7 • Instagram • YouTube • TikTok • Email
