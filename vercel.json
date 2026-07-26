@@ -1,9 +1,12 @@
 {
-  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/zone7 run build",
-  "outputDirectory": "artifacts/zone7/dist/public",
+  "buildCommand": "BASE_PATH=/ pnpm run build",
+  "outputDirectory": "dist/public",
   "installCommand": "pnpm install --frozen-lockfile",
-  "framework": null,
+  "framework": "vite",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
