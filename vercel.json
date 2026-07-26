@@ -1,6 +1,6 @@
 {
-  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/zone7 run build && cp -r artifacts/zone7/dist/public dist",
-  "outputDirectory": "dist",
+  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/zone7 run build",
+  "outputDirectory": "artifacts/zone7/dist/public",
   "installCommand": "pnpm install",
   "framework": null,
   "rewrites": [
