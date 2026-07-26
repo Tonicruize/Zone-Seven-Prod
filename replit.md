@@ -1,6 +1,6 @@
-# [Project name]
+# Zone7
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A dark-luxury creative brand site with a React/Vite frontend and an Express API backend.
 
 ## Run & Operate
 
