@@ -172,7 +172,7 @@ export function BeatsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <section className="relative pt-48 pb-24 px-6 md:px-12 overflow-hidden">
+      <section className="relative pt-44 md:pt-52 pb-20 md:pb-32 px-6 md:px-12 overflow-hidden">
         <div className="grain-overlay" />
 
         {/* Background logo watermark */}

@@ -67,7 +67,7 @@ export function AboutPage() {
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
 
       {/* HERO */}
-      <section className="relative pt-48 pb-32 px-6 md:px-12 min-h-[90vh] flex flex-col justify-center overflow-hidden">
+      <section className="relative pt-44 md:pt-52 pb-24 md:pb-36 px-6 md:px-12 min-h-[85vh] flex flex-col justify-end md:justify-center overflow-hidden border-b border-foreground/5">
         <div className="grain-overlay" />
 
         <motion.img
