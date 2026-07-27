@@ -21,7 +21,7 @@ export function Navigation() {
     { name: 'SERVICES', href: isHome ? '#services' : '/#services', isAnchor: true },
     { name: 'BEATS', href: '/beats', isAnchor: false },
     { name: 'ABOUT', href: '/about', isAnchor: false },
-    { name: 'CONTACT', href: isHome ? '#contact' : '/#contact', isAnchor: true },
+    { name: 'CONTACT', href: '/book', isAnchor: false },
   ];
 
   return (
@@ -64,7 +64,7 @@ export function Navigation() {
       </div>
 
       <MagneticButton
-        href={isHome ? '#contact' : '/#contact'}
+        href="/book"
         className="interactive block border border-primary text-foreground bg-transparent px-8 py-3 text-display text-xs tracking-[0.2em] uppercase hover:bg-primary/10 transition-colors duration-300"
       >
         <motion.span
