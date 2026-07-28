@@ -11,6 +11,7 @@ import { Services } from './components/Services';
 import { BrandGallery } from './components/BrandGallery';
 import { Process } from './components/Process';
 import { Testimonial } from './components/Testimonial';
+import { Ticker } from './components/Ticker';
 import { InstagramFeed } from './components/InstagramFeed';
 import { Footer } from './components/Footer';
 import { BeatsPage } from './pages/BeatsPage';
@@ -53,10 +54,26 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+const TICKER_ITEMS = [
+  'Music Videos', 'Commercials', 'Creative Direction', 'Films',
+  'Post Production', 'Culture First', 'Est. 2019', 'Lifestyle',
+];
+
 function HomePage() {
   return (
     <main className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
       <Hero />
+
+      {/* Full-bleed production ticker strip */}
+      <div className="border-y border-primary/20 py-4 bg-background overflow-hidden">
+        <Ticker
+          items={TICKER_ITEMS}
+          speed={55}
+          separator="✦"
+          itemClassName="text-[9px] tracking-[0.45em] text-primary/60 uppercase"
+        />
+      </div>
+
       <Stats />
       <VideoWorks />
       <Services />
