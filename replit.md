@@ -1,6 +1,6 @@
-# Zone7
+# [Project name]
 
-A dark-luxury creative brand site with a React/Vite frontend and an Express API backend.
+_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
 
 ## Run & Operate
 
