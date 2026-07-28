@@ -1,0 +1,84 @@
+Excellent—this is a different error, and it's much easier to fix.
+
+Your deployment is not failing because of the output directory anymore. It's failing before the build even starts.
+
+The key error is:
+
+ERR_PNPM_OUTDATED_LOCKFILE
+
+Cannot install with "frozen-lockfile"
+because pnpm-lock.yaml is not up to date
+with artifacts/zone7/package.json
+
+and more specifically:
+
+1 dependencies were removed:
+@workspace/api-client-react@workspace:*
+What happened?
+
+Your package.json and pnpm-lock.yaml are out of sync.
+
+Someone either:
+
+removed @workspace/api-client-react from package.json, or
+modified dependencies,
+
+but didn't regenerate and commit the updated pnpm-lock.yaml.
+
+Fix 1 (Recommended)
+
+On your local machine, from the repository root, run:
+
+pnpm install
+
+This updates pnpm-lock.yaml.
+
+Then commit it:
+
+git add pnpm-lock.yaml
+git commit -m "Update pnpm lockfile"
+git push
+
+Then redeploy.
+
+Fix 2 (Quick workaround)
+
+If you just want to get the deployment working, change the install command in vercel.json from:
+
+"installCommand": "pnpm install --frozen-lockfile"
+
+to
+
+"installCommand": "pnpm install --no-frozen-lockfile"
+
+or simply:
+
+"installCommand": "pnpm install"
+
+This tells Vercel to regenerate the lockfile during installation instead of requiring an exact match.
+
+I also recommend simplifying your vercel.json
+
+Since your project root is now artifacts/zone7, use:
+
+{
+  "framework": "vite",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "BASE_PATH=/ pnpm run build",
+  "outputDirectory": "dist/public",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+One more thing
+
+You still have this dependency in package.json:
+
+"@workspace/api-client-react": "workspace:*"
+
+If that package no longer exists in your workspace, you'll also need to remove that dependency (and any imports of it) or restore the package.
+
+At this point, the deployment is blocked only by the lockfile mismatch. Once that's resolved, if another error appears during the build, we can tackle that next.
