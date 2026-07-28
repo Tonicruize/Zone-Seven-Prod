@@ -1,5 +1,5 @@
 {
   "buildCommand": "pnpm install && pnpm --filter @workspace/zone7 run build",
-  "outputDirectory": "artifacts/zone7/dist/public",
+  "outputDirectory": "artifacts/zone7/dist",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
