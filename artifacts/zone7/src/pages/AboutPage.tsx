@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import logoOutline from '@assets/new_z7_logo2_1785000829580.png';
-import logo from '@assets/new_z7_logo_1785000827821.png';
+import productionsLogo from '@assets/ffsr_1785237007704.png';
 import gunLettering from '@assets/z7_gun_green2_1785000845703.png';
 import trustYourDope from '@assets/Z7_TRUST_YOUR_DOPE_1785000852594.png';
 import starEye from '@assets/Untitled_Project_-_T-Shirt_3_1785000831561.png';
@@ -269,7 +269,13 @@ export function AboutPage() {
       {/* CTA */}
       <section className="py-40 px-6 md:px-12 text-center">
         <div className="max-w-screen-xl mx-auto flex flex-col items-center">
-          <motion.img {...fadeUp()} src={logo} alt="Zone7" className="h-10 object-contain opacity-30 mb-12" />
+          <motion.img
+            {...fadeUp()}
+            src={productionsLogo}
+            alt="Zone7 Productions"
+            className="h-16 md:h-20 w-auto object-contain opacity-30 mb-12"
+            style={{ filter: 'brightness(0) invert(1)' }}
+          />
 
           <motion.h2
             {...fadeUp(0.1)}

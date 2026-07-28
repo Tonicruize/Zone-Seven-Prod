@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import heroGraphic from '@assets/Untitled_Project_-_T-Shirt_3_1785000831561.png';
 import { MagneticButton } from './MagneticButton';
@@ -6,7 +7,35 @@ import { Ticker } from './Ticker';
 const LATEST = { title: 'Man 2 Man', artist: 'Dremo', url: 'https://youtu.be/4xpww6rnz_w' };
 const SERVICES = ['Music Videos', 'Commercials', 'Creative Direction', 'Films', 'Lifestyle', 'Post Production'];
 
-/* ── Film registration corner marks ──────────────────────────────────── */
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+/* ── Fast-counting timecode ── */
+function Timecode() {
+  const [tc, setTc] = useState({ h: 0, m: 0, s: 0, f: 0 });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTc(prev => {
+        let { h, m, s, f } = prev;
+        f += 4;
+        if (f >= 24) { f = f % 24; s += 1; }
+        if (s >= 60) { s = 0; m += 1; }
+        if (m >= 60) { m = 0; h += 1; }
+        if (h >= 24) h = 0;
+        return { h, m, s, f };
+      });
+    }, 35);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <span className="font-mono text-[8px] tracking-[0.2em] text-foreground/20 uppercase">
+      {pad2(tc.h)}:{pad2(tc.m)}:{pad2(tc.s)}:{pad2(tc.f)}&nbsp;·&nbsp;24FPS&nbsp;·&nbsp;4K
+    </span>
+  );
+}
+
+/* ── Film registration corner marks ── */
 function CornerMark({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   const h = pos.includes('l') ? 'left-6 md:left-14' : 'right-6 md:right-14';
   const v = pos.includes('t') ? 'top-[80px] md:top-[88px]' : 'bottom-8 md:bottom-10';
@@ -27,7 +56,6 @@ export function Hero() {
     <section className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-background">
       <div className="grain-overlay" />
 
-      {/* Film corner marks */}
       <CornerMark pos="tl" />
       <CornerMark pos="tr" />
       <CornerMark pos="bl" />
@@ -42,45 +70,45 @@ export function Hero() {
         className="absolute left-5 md:left-12 top-0 bottom-0 w-px bg-primary/30 z-20 pointer-events-none"
       />
 
-      {/* Timecode — top-right, desktop only */}
+      {/* Timecode — top-right */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2 }}
         className="absolute top-[82px] md:top-[96px] right-8 md:right-16 z-20 pointer-events-none hidden sm:flex items-center gap-3"
       >
-        <span className="font-mono text-[8px] tracking-[0.2em] text-foreground/20 uppercase">
-          00:00:01&nbsp;·&nbsp;24FPS&nbsp;·&nbsp;4K
-        </span>
+        <Timecode />
       </motion.div>
 
       {/* Background graphic */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Radial glow — visible on all sizes */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 3, ease: 'easeOut' }}
-          className="absolute top-1/2 -translate-y-1/2
-            left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0
-            w-[100vw] md:w-[50vw] aspect-square"
-          style={{ background: 'radial-gradient(ellipse, rgba(212,180,131,0.09) 0%, transparent 65%)' }}
+          className="absolute top-1/2 -translate-y-1/2 right-0 w-[100vw] md:w-[55vw] aspect-square"
+          style={{ background: 'radial-gradient(ellipse, rgba(212,180,131,0.11) 0%, transparent 65%)' }}
         />
+        {/* Hero graphic — bottom-right on mobile, right-side on desktop */}
         <motion.img
           src={heroGraphic}
           alt=""
           initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 0.15, scale: 1 }}
+          animate={{ opacity: 0.22, scale: 1 }}
           transition={{ duration: 2.5, ease: 'easeOut' }}
-          className="absolute top-1/2 -translate-y-1/2
-            left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-[-4%]
-            w-[130vw] sm:w-[100vw] md:w-[54vw] object-contain mix-blend-lighten"
+          className="absolute
+            bottom-0 right-[-10%]
+            md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:right-[-4%]
+            w-[95vw] sm:w-[80vw] md:w-[54vw]
+            object-contain mix-blend-lighten"
         />
         {/* Right vignette */}
         <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, rgba(7,7,7,0.6) 0%, transparent 100%)' }} />
-        {/* Bottom vignette */}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.7) 0%, transparent 100%)' }} />
+          style={{ background: 'linear-gradient(to left, rgba(7,7,7,0.55) 0%, transparent 100%)' }} />
+        {/* Bottom vignette — stronger on mobile so text stays readable */}
+        <div className="absolute inset-x-0 bottom-0 h-2/5 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.85) 0%, transparent 100%)' }} />
       </div>
 
       {/* ── Main content ── */}
@@ -91,7 +119,7 @@ export function Hero() {
           initial={{ opacity: 0, x: -14 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.5 }}
-          className="mt-24 sm:mt-28 md:mt-44 pl-3 border-l-2 border-primary self-start"
+          className="mt-[88px] sm:mt-28 md:mt-44 pl-3 border-l-2 border-primary self-start"
         >
           <span className="text-primary text-[8px] md:text-[9px] tracking-[0.5em] uppercase font-medium">
             Est. 2019
@@ -103,8 +131,8 @@ export function Hero() {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 md:mt-10 text-display font-bold tracking-[-0.025em] uppercase"
-          style={{ fontSize: 'clamp(2.75rem, 11vw, 7rem)', lineHeight: 0.88 }}
+          className="mt-4 md:mt-10 text-display font-bold tracking-[-0.025em] uppercase"
+          style={{ fontSize: 'clamp(2.6rem, 10.5vw, 7rem)', lineHeight: 0.88 }}
         >
           We don't<br />
           shoot<br />
@@ -112,19 +140,19 @@ export function Hero() {
           <span className="text-primary">We create<br />culture.</span>
         </motion.h1>
 
-        {/* Services marquee — hidden on smallest screens to avoid crowding */}
+        {/* Services marquee */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="mt-7 md:mt-10 -ml-10 md:-ml-24 lg:-ml-32 w-[100vw] overflow-hidden hidden xs:block"
+          className="mt-6 md:mt-10 -ml-10 md:-ml-24 lg:-ml-32 w-[100vw] overflow-hidden"
         >
           <Ticker
             items={SERVICES}
             speed={38}
             separator="·"
             className="py-0"
-            itemClassName="text-[8px] md:text-[9px] tracking-[0.38em] text-foreground/40 uppercase"
+            itemClassName="text-[8px] md:text-[9px] tracking-[0.38em] text-foreground/35 uppercase"
           />
         </motion.div>
 
@@ -133,7 +161,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 md:mt-14"
+          className="mt-6 md:mt-14"
         >
           <MagneticButton
             href="#work"
@@ -148,15 +176,15 @@ export function Hero() {
           </MagneticButton>
         </motion.div>
 
-        {/* Spacer */}
-        <div className="flex-1" style={{ minHeight: 'clamp(1.5rem, 4vh, 4rem)' }} />
+        {/* Flexible spacer */}
+        <div className="flex-1" />
 
-        {/* Bottom row: scroll indicator + latest release */}
+        {/* Bottom row */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.8 }}
-          className="mb-7 md:mb-12 flex items-end justify-between"
+          className="mb-6 md:mb-12 flex items-end justify-between"
         >
           {/* Scroll indicator */}
           <div className="flex items-center gap-3 md:gap-4">

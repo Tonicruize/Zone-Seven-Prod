@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import logo from '@assets/new_z7_logo_1785000827821.png';
+import productionsLogo from '@assets/ffsr_1785237007704.png';
 import { MagneticButton } from './MagneticButton';
 
 export function Footer() {
@@ -34,9 +34,13 @@ export function Footer() {
 
         {/* Footer Bottom */}
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 pt-12 border-t border-primary/20">
-          <div className="flex items-center gap-4">
-            <img src={logo} alt="Zone7" className="h-6 object-contain opacity-50" />
-            <span className="text-xs text-muted-foreground tracking-widest uppercase mt-1">©2026</span>
+          <div className="flex items-center gap-3">
+            <img
+              src={productionsLogo}
+              alt="Zone7 Productions"
+              className="h-10 md:h-12 w-auto object-contain opacity-40"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
           </div>
 
           <div className="flex items-center gap-8 text-xs tracking-[0.2em] text-muted-foreground uppercase">
