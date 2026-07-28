@@ -1,0 +1,82 @@
+dist/public/assets/index-CdC_Ddgm.css                                         121.16 kB │ gzip:  19.64 kB
+dist/public/assets/index-BNvFQHb_.js                                          429.85 kB │ gzip: 133.72 kB
+✓ built in 4.30s
+Error: No Output Directory named "public" found after the Build completed. Configure the Output Directory in your Project Settings. Alternatively, configure vercel.json#outputDirectory.
+Learn More: https://vercel.link/missing-public-directory
+
+This is the clue we needed.
+
+Your build output shows:
+
+dist/public/assets/index-CdC_Ddgm.css
+dist/public/assets/index-BNvFQHb_.js
+✓ built in 4.30s
+
+So Vite is successfully creating dist/public.
+
+Yet Vercel says:
+
+No Output Directory named "public" found
+
+That means Vercel is not actually using the outputDirectory from your vercel.json. It's looking for a folder named public because of the project's Build & Output Settings in the Vercel dashboard.
+
+Fix 1: Check the project's Output Directory in Vercel
+
+Go to:
+
+Project → Settings → Build & Deployment
+
+Look for Output Directory.
+
+If it says:
+
+public
+
+change it to:
+
+dist/public
+
+If it's locked, click Override (if available) or remove the project and re-import it after fixing vercel.json.
+
+Fix 2: Make sure vercel.json is in the correct place
+
+Since your Root Directory is artifacts/zone7, the vercel.json should also be inside:
+
+artifacts/zone7/vercel.json
+
+If it's in the repository root, Vercel may ignore it when the root directory is set to artifacts/zone7.
+
+Fix 3: Force the output directory
+
+Inside artifacts/zone7/vercel.json:
+
+{
+  "framework": "vite",
+  "buildCommand": "BASE_PATH=/ pnpm run build",
+  "outputDirectory": "dist/public"
+}
+I suspect one final thing
+
+The error wording is very specific:
+
+No Output Directory named "public" found
+
+Notice it doesn't say:
+
+dist/public
+
+That usually means the project still has Output Directory = public stored in Vercel's settings from an earlier import.
+
+Can you check one thing?
+
+Open:
+
+Project → Settings → General
+
+or
+
+Project → Settings → Build & Deployment
+
+and tell me exactly what "Output Directory" shows.
+
+A screenshot of that page would be even better. I suspect it's still set to public, and once that's corrected to dist/public, the deployment should succeed.
