@@ -9,10 +9,9 @@ const SERVICES = ['Music Videos', 'Commercials', 'Creative Direction', 'Films', 
 /* ── Film registration corner marks ──────────────────────────────────── */
 function CornerMark({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   const h = pos.includes('l') ? 'left-6 md:left-14' : 'right-6 md:right-14';
-  const v = pos.includes('t') ? 'top-[88px] md:top-[96px]' : 'bottom-8 md:bottom-10';
+  const v = pos.includes('t') ? 'top-[80px] md:top-[88px]' : 'bottom-8 md:bottom-10';
   const bv = pos.includes('t') ? 'border-t' : 'border-b';
   const bh = pos.includes('l') ? 'border-l' : 'border-r';
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,13 +27,13 @@ export function Hero() {
     <section className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-background">
       <div className="grain-overlay" />
 
-      {/* ── Film corner marks ── */}
+      {/* Film corner marks */}
       <CornerMark pos="tl" />
       <CornerMark pos="tr" />
       <CornerMark pos="bl" />
       <CornerMark pos="br" />
 
-      {/* ── Left vertical gold line ── */}
+      {/* Left vertical gold line */}
       <motion.div
         initial={{ scaleY: 0 }}
         animate={{ scaleY: 1 }}
@@ -43,19 +42,19 @@ export function Hero() {
         className="absolute left-5 md:left-12 top-0 bottom-0 w-px bg-primary/30 z-20 pointer-events-none"
       />
 
-      {/* ── Timecode — top-right ── */}
+      {/* Timecode — top-right, desktop only */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2 }}
-        className="absolute top-[90px] md:top-[98px] right-8 md:right-16 z-20 pointer-events-none hidden sm:flex items-center gap-3"
+        className="absolute top-[82px] md:top-[96px] right-8 md:right-16 z-20 pointer-events-none hidden sm:flex items-center gap-3"
       >
         <span className="font-mono text-[8px] tracking-[0.2em] text-foreground/20 uppercase">
           00:00:01&nbsp;·&nbsp;24FPS&nbsp;·&nbsp;4K
         </span>
       </motion.div>
 
-      {/* ── Background graphic ── */}
+      {/* Background graphic */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
@@ -63,40 +62,36 @@ export function Hero() {
           transition={{ duration: 3, ease: 'easeOut' }}
           className="absolute top-1/2 -translate-y-1/2
             left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0
-            w-[100vw] md:w-[50vw] aspect-square rounded-full"
+            w-[100vw] md:w-[50vw] aspect-square"
           style={{ background: 'radial-gradient(ellipse, rgba(212,180,131,0.09) 0%, transparent 65%)' }}
         />
         <motion.img
           src={heroGraphic}
           alt=""
           initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 0.18, scale: 1 }}
+          animate={{ opacity: 0.15, scale: 1 }}
           transition={{ duration: 2.5, ease: 'easeOut' }}
           className="absolute top-1/2 -translate-y-1/2
             left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-[-4%]
-            w-[110vw] md:w-[54vw] object-contain mix-blend-lighten"
+            w-[130vw] sm:w-[100vw] md:w-[54vw] object-contain mix-blend-lighten"
         />
-        {/* Right-edge vignette */}
-        <div
-          className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, rgba(7,7,7,0.6) 0%, transparent 100%)' }}
-        />
+        {/* Right vignette */}
+        <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
+          style={{ background: 'linear-gradient(to left, rgba(7,7,7,0.6) 0%, transparent 100%)' }} />
         {/* Bottom vignette */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.7) 0%, transparent 100%)' }}
-        />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.7) 0%, transparent 100%)' }} />
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 flex flex-col flex-1 pl-10 pr-5 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
+      <div className="relative z-10 flex flex-col flex-1 pl-10 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
 
         {/* EST. label */}
         <motion.div
           initial={{ opacity: 0, x: -14 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.5 }}
-          className="mt-28 md:mt-44 pl-3 border-l-2 border-primary self-start"
+          className="mt-24 sm:mt-28 md:mt-44 pl-3 border-l-2 border-primary self-start"
         >
           <span className="text-primary text-[8px] md:text-[9px] tracking-[0.5em] uppercase font-medium">
             Est. 2019
@@ -108,8 +103,8 @@ export function Hero() {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 md:mt-10 text-display font-bold tracking-[-0.025em] uppercase"
-          style={{ fontSize: 'clamp(3.6rem, 13.5vw, 7rem)', lineHeight: 0.85 }}
+          className="mt-5 md:mt-10 text-display font-bold tracking-[-0.025em] uppercase"
+          style={{ fontSize: 'clamp(2.75rem, 11vw, 7rem)', lineHeight: 0.88 }}
         >
           We don't<br />
           shoot<br />
@@ -117,12 +112,12 @@ export function Hero() {
           <span className="text-primary">We create<br />culture.</span>
         </motion.h1>
 
-        {/* Services marquee strip */}
+        {/* Services marquee — hidden on smallest screens to avoid crowding */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="mt-8 md:mt-10 -ml-10 md:-ml-24 lg:-ml-32 w-[100vw] overflow-hidden"
+          className="mt-7 md:mt-10 -ml-10 md:-ml-24 lg:-ml-32 w-[100vw] overflow-hidden hidden xs:block"
         >
           <Ticker
             items={SERVICES}
@@ -138,12 +133,12 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-9 md:mt-14"
+          className="mt-8 md:mt-14"
         >
           <MagneticButton
             href="#work"
             className="interactive border border-primary text-foreground bg-transparent
-              px-7 py-4 md:px-10 md:py-5
+              px-7 py-3.5 md:px-10 md:py-5
               text-display text-[9px] md:text-[10px] tracking-[0.28em] uppercase
               transition-colors duration-300 hover:bg-primary/10
               flex items-center gap-5 md:gap-6 group"
@@ -154,14 +149,14 @@ export function Hero() {
         </motion.div>
 
         {/* Spacer */}
-        <div className="flex-1" style={{ minHeight: 'clamp(2rem, 6vh, 5rem)' }} />
+        <div className="flex-1" style={{ minHeight: 'clamp(1.5rem, 4vh, 4rem)' }} />
 
-        {/* ── Bottom row: scroll indicator + latest release callout ── */}
+        {/* Bottom row: scroll indicator + latest release */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.8 }}
-          className="mb-8 md:mb-12 flex items-end justify-between"
+          className="mb-7 md:mb-12 flex items-end justify-between"
         >
           {/* Scroll indicator */}
           <div className="flex items-center gap-3 md:gap-4">
@@ -175,7 +170,7 @@ export function Hero() {
             </span>
           </div>
 
-          {/* NOW STREAMING callout — hidden on very small screens */}
+          {/* NOW STREAMING callout */}
           <a
             href={LATEST.url}
             target="_blank"
@@ -183,7 +178,6 @@ export function Hero() {
             className="interactive hidden sm:flex flex-col items-end gap-1.5 group"
           >
             <div className="flex items-center gap-2">
-              {/* Pulsing live dot */}
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
