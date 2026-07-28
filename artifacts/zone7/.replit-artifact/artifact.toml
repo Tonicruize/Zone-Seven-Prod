@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Zone7"
+version = "1.0.0"
+id = "artifacts/zone7"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21766
+
+[services.development]
+run = "pnpm --filter @workspace/zone7 run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/zone7", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/zone7/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21766"
+BASE_PATH = "/"
