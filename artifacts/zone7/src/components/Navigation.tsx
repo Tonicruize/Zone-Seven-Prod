@@ -44,7 +44,7 @@ export function Navigation() {
             <img
               src={logo}
               alt="Zone7"
-              className="h-14 md:h-16 w-auto object-contain"
+              className="h-20 md:h-24 w-auto object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </Link>

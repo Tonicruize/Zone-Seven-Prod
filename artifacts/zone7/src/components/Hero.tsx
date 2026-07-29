@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import heroGraphic from '@assets/Untitled_Project_-_T-Shirt_3_1785000831561.png';
 import { MagneticButton } from './MagneticButton';
@@ -7,95 +6,17 @@ import { Ticker } from './Ticker';
 const LATEST = { title: 'Man 2 Man', artist: 'Dremo', url: 'https://youtu.be/4xpww6rnz_w' };
 const SERVICES = ['Music Videos', 'Commercials', 'Creative Direction', 'Films', 'Lifestyle', 'Post Production'];
 
-const pad2 = (n: number) => String(n).padStart(2, '0');
-
-/* ── Fast-counting timecode ── */
-function Timecode() {
-  const [tc, setTc] = useState({ h: 0, m: 0, s: 0, f: 0 });
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setTc(prev => {
-        let { h, m, s, f } = prev;
-        f += 4;
-        if (f >= 24) { f = f % 24; s += 1; }
-        if (s >= 60) { s = 0; m += 1; }
-        if (m >= 60) { m = 0; h += 1; }
-        if (h >= 24) h = 0;
-        return { h, m, s, f };
-      });
-    }, 35);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <span className="font-mono text-[8px] tracking-[0.2em] text-foreground/20 uppercase">
-      {pad2(tc.h)}:{pad2(tc.m)}:{pad2(tc.s)}:{pad2(tc.f)}&nbsp;·&nbsp;24FPS&nbsp;·&nbsp;4K
-    </span>
-  );
-}
-
-/* ── Film registration corner marks ── */
-function CornerMark({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
-  const h = pos.includes('l') ? 'left-6 md:left-14' : 'right-6 md:right-14';
-  const v = pos.includes('t') ? 'top-[80px] md:top-[88px]' : 'bottom-8 md:bottom-10';
-  const bv = pos.includes('t') ? 'border-t' : 'border-b';
-  const bh = pos.includes('l') ? 'border-l' : 'border-r';
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.4, delay: 1.6 }}
-      className={`absolute ${h} ${v} w-5 h-5 ${bv} ${bh} border-primary/35 z-20 pointer-events-none`}
-    />
-  );
-}
-
 export function Hero() {
   return (
     <section className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-background">
-      <div className="grain-overlay" />
-
-      <CornerMark pos="tl" />
-      <CornerMark pos="tr" />
-      <CornerMark pos="bl" />
-      <CornerMark pos="br" />
-
-      {/* Left vertical gold line */}
-      <motion.div
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        style={{ originY: 0 }}
-        className="absolute left-5 md:left-12 top-0 bottom-0 w-px bg-primary/30 z-20 pointer-events-none"
-      />
-
-      {/* Timecode — top-right */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2 }}
-        className="absolute top-[82px] md:top-[96px] right-8 md:right-16 z-20 pointer-events-none hidden sm:flex items-center gap-3"
-      >
-        <Timecode />
-      </motion.div>
 
       {/* Background graphic */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Radial glow — visible on all sizes */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 3, ease: 'easeOut' }}
-          className="absolute top-1/2 -translate-y-1/2 right-0 w-[100vw] md:w-[55vw] aspect-square"
-          style={{ background: 'radial-gradient(ellipse, rgba(212,180,131,0.11) 0%, transparent 65%)' }}
-        />
-        {/* Hero graphic — bottom-right on mobile, right-side on desktop */}
         <motion.img
           src={heroGraphic}
           alt=""
           initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 0.22, scale: 1 }}
+          animate={{ opacity: 0.28, scale: 1 }}
           transition={{ duration: 2.5, ease: 'easeOut' }}
           className="absolute
             bottom-0 right-[-10%]
@@ -106,32 +27,20 @@ export function Hero() {
         {/* Right vignette */}
         <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
           style={{ background: 'linear-gradient(to left, rgba(7,7,7,0.55) 0%, transparent 100%)' }} />
-        {/* Bottom vignette — stronger on mobile so text stays readable */}
+        {/* Bottom vignette */}
         <div className="absolute inset-x-0 bottom-0 h-2/5 pointer-events-none"
           style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.85) 0%, transparent 100%)' }} />
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 flex flex-col flex-1 pl-10 pr-6 md:pl-24 md:pr-12 lg:pl-32 lg:pr-20">
-
-        {/* EST. label */}
-        <motion.div
-          initial={{ opacity: 0, x: -14 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, delay: 0.5 }}
-          className="mt-[88px] sm:mt-28 md:mt-44 pl-3 border-l-2 border-primary self-start"
-        >
-          <span className="text-primary text-[8px] md:text-[9px] tracking-[0.5em] uppercase font-medium">
-            Est. 2019
-          </span>
-        </motion.div>
+      <div className="relative z-10 flex flex-col flex-1 pl-6 pr-6 md:pl-16 md:pr-12 lg:pl-24 lg:pr-20">
 
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-4 md:mt-10 text-display font-bold tracking-[-0.025em] uppercase"
+          transition={{ duration: 1.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-32 sm:mt-36 md:mt-44 text-display font-bold tracking-[-0.025em] uppercase"
           style={{ fontSize: 'clamp(2.6rem, 10.5vw, 7rem)', lineHeight: 0.88 }}
         >
           We don't<br />
@@ -144,8 +53,8 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.1 }}
-          className="mt-6 md:mt-10 -ml-10 md:-ml-24 lg:-ml-32 w-[100vw] overflow-hidden"
+          transition={{ duration: 1, delay: 0.9 }}
+          className="mt-6 md:mt-10 -ml-6 md:-ml-16 lg:-ml-24 w-[100vw] overflow-hidden"
         >
           <Ticker
             items={SERVICES}
@@ -160,7 +69,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.1, delay: 1.05, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 md:mt-14"
         >
           <MagneticButton
@@ -179,26 +88,13 @@ export function Hero() {
         {/* Flexible spacer */}
         <div className="flex-1" />
 
-        {/* Bottom row */}
+        {/* NOW STREAMING callout */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.8 }}
-          className="mb-6 md:mb-12 flex items-end justify-between"
+          transition={{ duration: 1, delay: 1.6 }}
+          className="mb-6 md:mb-12 flex justify-end"
         >
-          {/* Scroll indicator */}
-          <div className="flex items-center gap-3 md:gap-4">
-            <motion.div
-              animate={{ y: [0, 9, 0] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-px h-8 md:h-10 bg-primary/50"
-            />
-            <span className="text-[7px] md:text-[8px] tracking-[0.5em] text-foreground/30 uppercase">
-              Scroll
-            </span>
-          </div>
-
-          {/* NOW STREAMING callout */}
           <a
             href={LATEST.url}
             target="_blank"
