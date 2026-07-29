@@ -10,8 +10,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    // Logo holds for ~2.4s then wipes off
-    const t = setTimeout(() => setLeaving(true), 2400);
+    const t = setTimeout(() => setLeaving(true), 3600);
     return () => clearTimeout(t);
   }, []);
 
@@ -22,7 +21,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
           key="preloader"
           className="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center gap-8"
           exit={{ y: '-100%' }}
-          transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
         >
           {/* Logo */}
           <motion.img
@@ -34,7 +33,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
             transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           />
 
-          {/* Thin gold rule — fades in after logo settles */}
+          {/* Thin gold rule */}
           <motion.div
             className="w-8 h-px bg-[#d4b483]"
             initial={{ opacity: 0, scaleX: 0 }}

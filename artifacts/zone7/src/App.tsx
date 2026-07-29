@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -24,37 +24,12 @@ import NotFound from './pages/not-found';
 const queryClient = new QueryClient();
 
 const pageVariants = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit:    { opacity: 0, y: -10 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit:    { opacity: 0 },
 };
 
-const pageTransition = {
-  duration: 0.45,
-  ease: [0.16, 1, 0.3, 1] as const,
-};
-
-function PageWrapper({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
-
-  // Scroll to top on every route change
-  useEffect(() => { window.scrollTo(0, 0); }, [location]);
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location}
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={pageTransition}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+const pageTransition = { duration: 0.3 };
 
 const TICKER_ITEMS = [
   'Music Videos', 'Commercials', 'Creative Direction', 'Films',
@@ -65,8 +40,6 @@ function HomePage() {
   return (
     <main className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
       <Hero />
-
-      {/* Full-bleed production ticker strip */}
       <div className="border-y border-primary/20 py-4 bg-background overflow-hidden">
         <Ticker
           items={TICKER_ITEMS}
@@ -75,7 +48,6 @@ function HomePage() {
           itemClassName="text-[9px] tracking-[0.45em] text-primary/60 uppercase"
         />
       </div>
-
       <Stats />
       <VideoWorks />
       <Services />
@@ -88,27 +60,46 @@ function HomePage() {
   );
 }
 
-function App() {
-  const [ready, setReady] = useState(false);
+/* Inner shell — lives inside WouterRouter so useLocation works */
+function AppShell() {
+  const [location] = useLocation();
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Preloader onComplete={() => setReady(true)} />
-      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+    <>
+      {/* Preloader — remounts on every route change via key */}
+      <Preloader key={location} onComplete={() => setPreloaderDone(true)} />
+
+      {/* Page content — rendered underneath, fades in after preloader wipes */}
+      <motion.div
+        key={`content-${location}`}
+        variants={pageVariants}
+        initial="initial"
+        animate={preloaderDone ? 'animate' : 'initial'}
+        transition={pageTransition}
+      >
         <div className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
           <Cursor />
           <Navigation />
-          <PageWrapper>
-            <Switch>
-              <Route path="/" component={HomePage} />
-              <Route path="/work" component={WorkPage} />
-              <Route path="/beats" component={BeatsPage} />
-              <Route path="/about" component={AboutPage} />
-              <Route path="/book" component={BookingPage} />
-              <Route component={NotFound} />
-            </Switch>
-          </PageWrapper>
+          <Switch>
+            <Route path="/" component={HomePage} />
+            <Route path="/work" component={WorkPage} />
+            <Route path="/beats" component={BeatsPage} />
+            <Route path="/about" component={AboutPage} />
+            <Route path="/book" component={BookingPage} />
+            <Route component={NotFound} />
+          </Switch>
         </div>
+      </motion.div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <AppShell />
       </WouterRouter>
     </QueryClientProvider>
   );

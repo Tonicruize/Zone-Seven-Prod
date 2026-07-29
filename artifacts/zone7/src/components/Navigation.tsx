@@ -4,6 +4,37 @@ import { Link, useLocation } from 'wouter';
 import logo from '@assets/ZONE_7_ellipse_nu_1785236361747.png';
 import { MagneticButton } from './MagneticButton';
 
+function IconInstagram() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+    </svg>
+  );
+}
+
+function IconTikTok() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.67a8.18 8.18 0 0 0 4.78 1.52V6.73a4.85 4.85 0 0 1-1.01-.04z"/>
+    </svg>
+  );
+}
+
+const SOCIALS = [
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/zone7rf',
+    icon: <IconInstagram />,
+  },
+  {
+    label: 'TikTok',
+    href: 'https://www.tiktok.com/@zone7_productions',
+    icon: <IconTikTok />,
+  },
+];
+
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +47,6 @@ export function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setMenuOpen(false); }, [location]);
 
   const navLinks = [
@@ -57,14 +87,12 @@ export function Navigation() {
                 ${isActive ? 'text-primary' : 'text-foreground/60 hover:text-foreground'}`;
 
               return link.isAnchor ? (
-                <a key={link.name} href={link.href} className={cls}
-                  data-testid={`link-nav-${link.name.toLowerCase()}`}>
+                <a key={link.name} href={link.href} className={cls}>
                   {link.name}
                   {isActive && <span className="absolute -bottom-1 left-0 right-0 h-px bg-primary" />}
                 </a>
               ) : (
-                <Link key={link.name} href={link.href} className={cls}
-                  data-testid={`link-nav-${link.name.toLowerCase()}`}>
+                <Link key={link.name} href={link.href} className={cls}>
                   {link.name}
                   {isActive && <span className="absolute -bottom-1 left-0 right-0 h-px bg-primary" />}
                 </Link>
@@ -72,8 +100,28 @@ export function Navigation() {
             })}
           </div>
 
-          {/* Right side: Book button + mobile hamburger */}
-          <div className="flex items-center gap-4">
+          {/* Right side: socials + Book + hamburger */}
+          <div className="flex items-center gap-3 md:gap-4">
+
+            {/* Social icons — desktop */}
+            <div className="hidden md:flex items-center gap-3 mr-1">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="interactive flex items-center justify-center w-8 h-8
+                    text-foreground/40 hover:text-primary transition-colors duration-300"
+                >
+                  {s.icon}
+                </a>
+              ))}
+              {/* Thin divider */}
+              <div className="w-px h-4 bg-foreground/15 mx-1" />
+            </div>
+
             <MagneticButton
               href="/book"
               className="interactive hidden md:flex border border-primary/60 text-foreground/80 bg-transparent
@@ -114,7 +162,6 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Gold accent line under scrolled nav */}
         {scrolled && (
           <motion.div
             initial={{ scaleX: 0 }}
@@ -167,12 +214,29 @@ export function Navigation() {
               ))}
             </nav>
 
-            {/* Bottom CTA */}
+            {/* Bottom: socials + CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col gap-5"
             >
+              {/* Social links */}
+              <div className="flex items-center gap-6">
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="interactive flex items-center gap-2 text-foreground/40 hover:text-primary transition-colors duration-300"
+                  >
+                    {s.icon}
+                    <span className="text-[9px] tracking-[0.3em] uppercase">{s.label}</span>
+                  </a>
+                ))}
+              </div>
+
               <Link
                 href="/book"
                 className="block w-full text-center border border-primary text-foreground py-4
