@@ -38,7 +38,7 @@ export function Footer() {
             <img
               src={productionsLogo}
               alt="Zone7 Productions"
-              className="h-10 md:h-12 w-auto object-contain opacity-40"
+              className="h-20 md:h-24 w-auto object-contain opacity-60"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
