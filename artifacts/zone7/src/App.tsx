@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Cursor } from './components/Cursor';
+import { Preloader } from './components/Preloader';
 import { Navigation } from './components/Navigation';
 import { Hero } from './components/Hero';
 import { Stats } from './components/Stats';
@@ -87,8 +88,11 @@ function HomePage() {
 }
 
 function App() {
+  const [ready, setReady] = useState(false);
+
   return (
     <QueryClientProvider client={queryClient}>
+      <Preloader onComplete={() => setReady(true)} />
       <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
         <div className="bg-background min-h-[100dvh] text-foreground selection:bg-primary selection:text-primary-foreground relative">
           <Cursor />
