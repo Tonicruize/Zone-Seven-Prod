@@ -20,7 +20,7 @@ export function Navigation() {
   useEffect(() => { setMenuOpen(false); }, [location]);
 
   const navLinks = [
-    { name: 'WORK',     href: isHome ? '#work'     : '/#work',     isAnchor: true  },
+    { name: 'WORK',     href: '/work',   isAnchor: false },
     { name: 'SERVICES', href: isHome ? '#services' : '/#services', isAnchor: true  },
     { name: 'BEATS',    href: '/beats',   isAnchor: false },
     { name: 'ABOUT',    href: '/about',   isAnchor: false },

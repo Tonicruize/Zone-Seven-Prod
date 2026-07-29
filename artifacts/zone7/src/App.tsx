@@ -18,6 +18,7 @@ import { Footer } from './components/Footer';
 import { BeatsPage } from './pages/BeatsPage';
 import { AboutPage } from './pages/AboutPage';
 import { BookingPage } from './pages/BookingPage';
+import { WorkPage } from './pages/WorkPage';
 import NotFound from './pages/not-found';
 
 const queryClient = new QueryClient();
@@ -100,6 +101,7 @@ function App() {
           <PageWrapper>
             <Switch>
               <Route path="/" component={HomePage} />
+              <Route path="/work" component={WorkPage} />
               <Route path="/beats" component={BeatsPage} />
               <Route path="/about" component={AboutPage} />
               <Route path="/book" component={BookingPage} />
