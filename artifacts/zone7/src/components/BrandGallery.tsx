@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
-import trustYourDope from '@assets/Z7_TRUST_YOUR_DOPE_1785000852594.png';
-import twineStandard from '@assets/Z7_TWINE_1785000859633.png';
-import multicolor from '@assets/Z7_MULTICOLOR_OTHERS_1785000865556.png';
-import starEye from '@assets/Untitled_Project_-_T-Shirt_3_1785000831561.png';
+
+const slots = [
+  { col: 'md:col-span-7', size: 'aspect-[4/3]' },
+  { col: 'md:col-span-5', size: 'aspect-square' },
+  { col: 'md:col-span-6', size: 'aspect-[4/3]' },
+  { col: 'md:col-span-6', size: 'aspect-square' },
+];
 
 export function BrandGallery() {
   return (
@@ -31,68 +34,31 @@ export function BrandGallery() {
         </div>
 
         {/* Row 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-end mb-12 md:mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 1, ease: 'easeOut' }}
-            className="md:col-span-7 flex justify-center"
-          >
-            <img
-              src={trustYourDope}
-              alt="Trust Your Dope"
-              className="w-[85%] md:w-[78%] object-contain mix-blend-lighten"
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-4 md:mb-6">
+          {slots.slice(0, 2).map((slot, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1, delay: i * 0.12, ease: 'easeOut' }}
+              className={`${slot.col} ${slot.size} bg-foreground/5 border border-foreground/8`}
             />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 1, delay: 0.15, ease: 'easeOut' }}
-            className="md:col-span-5 flex justify-center md:justify-end"
-          >
-            <img
-              src={starEye}
-              alt="Star Eye"
-              className="w-[65%] md:w-[85%] object-contain mix-blend-lighten"
-            />
-          </motion.div>
+          ))}
         </div>
 
-        {/* Thin gold separator */}
-        <div className="w-full h-px bg-primary/10 mb-12 md:mb-20" />
-
         {/* Row 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 1, ease: 'easeOut' }}
-            className="md:col-span-6 flex justify-start"
-          >
-            <img
-              src={multicolor}
-              alt="Multicolor Z7"
-              className="w-full md:w-[88%] object-contain mix-blend-lighten"
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+          {slots.slice(2).map((slot, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }}
+              className={`${slot.col} ${slot.size} bg-foreground/5 border border-foreground/8`}
             />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
-            className="md:col-span-6 flex justify-center md:justify-end"
-          >
-            <img
-              src={twineStandard}
-              alt="Z7 Twine"
-              className="w-[60%] md:w-[72%] object-contain mix-blend-lighten"
-            />
-          </motion.div>
+          ))}
         </div>
 
       </div>
