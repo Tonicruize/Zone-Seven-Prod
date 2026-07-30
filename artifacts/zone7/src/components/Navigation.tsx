@@ -22,6 +22,16 @@ function IconTikTok() {
   );
 }
 
+function IconCart() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  );
+}
+
 const SOCIALS = [
   {
     label: 'Instagram',
@@ -100,10 +110,10 @@ export function Navigation() {
             })}
           </div>
 
-          {/* Right side: socials + Book + hamburger */}
+          {/* Right side: socials + cart + Book + hamburger */}
           <div className="flex items-center gap-3 md:gap-4">
 
-            {/* Social icons — desktop */}
+            {/* Social icons — desktop only */}
             <div className="hidden md:flex items-center gap-3 mr-1">
               {SOCIALS.map((s) => (
                 <a
@@ -118,9 +128,32 @@ export function Navigation() {
                   {s.icon}
                 </a>
               ))}
+              {/* Cart icon — after socials, before divider */}
+              <a
+                href="https://zone7-fashion.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Shop"
+                className="interactive flex items-center justify-center w-8 h-8
+                  text-foreground/40 hover:text-primary transition-colors duration-300"
+              >
+                <IconCart />
+              </a>
               {/* Thin divider */}
               <div className="w-px h-4 bg-foreground/15 mx-1" />
             </div>
+
+            {/* Cart icon — mobile, always visible */}
+            <a
+              href="https://zone7-fashion.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Shop"
+              className="md:hidden interactive flex items-center justify-center w-9 h-9
+                text-foreground/40 hover:text-primary transition-colors duration-300"
+            >
+              <IconCart />
+            </a>
 
             <MagneticButton
               href="/book"

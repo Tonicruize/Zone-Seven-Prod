@@ -41,16 +41,15 @@ const StatCounter = ({ value, suffix, label }: { value: number; suffix: string; 
 
 export function Stats() {
   const stats = [
-    { value: 25, suffix: '+', label: 'Projects' },
-    { value: 15, suffix: '', label: 'Artists' },
-    { value: 8, suffix: '', label: 'Countries' },
-    { value: 100, suffix: 'M+', label: 'Views' },
+    { value: 200, suffix: '+', label: 'Projects' },
+    { value: 30, suffix: '+', label: 'Artists' },
+    { value: 77, suffix: 'M', label: 'Views' },
   ];
 
   return (
     <section className="py-0 bg-background border-t border-primary/20">
       <div className="max-w-screen-2xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-primary/10">
+        <div className="grid grid-cols-3 md:grid-cols-3 divide-x divide-primary/10">
           {stats.map((stat) => (
             <div key={stat.label} className="relative">
               <StatCounter {...stat} />

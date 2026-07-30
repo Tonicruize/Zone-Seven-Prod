@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Footer } from '../components/Footer';
 
 /* ─── Data ─────────────────────────────────────────────────────────── */
@@ -49,6 +49,14 @@ const TEAM = [
   },
 ];
 
+type Tab = 'music-videos' | 'bts' | 'reels';
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'music-videos', label: 'Music Videos' },
+  { id: 'bts',          label: 'Behind the Scenes' },
+  { id: 'reels',        label: 'Instagram Reels' },
+];
+
 /* ─── Helpers ───────────────────────────────────────────────────────── */
 
 const fadeUp = (delay = 0) => ({
@@ -57,17 +65,6 @@ const fadeUp = (delay = 0) => ({
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div {...fadeUp()} className="flex items-center gap-6 mb-16 md:mb-20">
-      <span className="text-[9px] tracking-[0.45em] text-primary uppercase shrink-0">
-        {children}
-      </span>
-      <div className="flex-1 h-px bg-primary/20" />
-    </motion.div>
-  );
-}
 
 function EmbedFrame({ id, title }: { id: string; title: string }) {
   return (
@@ -184,7 +181,10 @@ function ReelsCarousel() {
 function TeamSection() {
   return (
     <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-foreground/5">
-      <SectionLabel>The Team</SectionLabel>
+      <div className="flex items-center gap-6 mb-16 md:mb-20">
+        <span className="text-[9px] tracking-[0.45em] text-primary uppercase shrink-0">The Team</span>
+        <div className="flex-1 h-px bg-primary/20" />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 max-w-screen-2xl mx-auto">
         {TEAM.map((member, i) => (
           <motion.div key={member.name} {...fadeUp(i * 0.1)}>
@@ -222,6 +222,7 @@ function TeamSection() {
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export function WorkPage() {
+  const [activeTab, setActiveTab] = useState<Tab>('music-videos');
   const [featured, ...rest] = MUSIC_VIDEOS;
   const row2 = rest.slice(0, 2);
   const row3 = rest.slice(2);
@@ -230,68 +231,115 @@ export function WorkPage() {
     <main className="bg-background min-h-[100dvh] text-foreground">
 
       {/* Page header */}
-      <section className="px-6 md:px-12 lg:px-20 pt-36 md:pt-44 pb-20 md:pb-28 border-b border-foreground/5">
+      <section className="px-6 md:px-12 lg:px-20 pt-36 md:pt-44 pb-12 md:pb-16 border-b border-foreground/5">
         <motion.h1
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="text-display font-bold uppercase tracking-[-0.02em] leading-none"
-          style={{ fontSize: 'clamp(3.5rem, 12vw, 9rem)' }}
+          style={{ fontSize: 'clamp(1.6rem, 4vw, 3rem)' }}
         >
-          Selected<br />
-          <span className="text-primary">Works</span>
+          Selected <span className="text-primary">Works</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="mt-6 text-[10px] tracking-[0.4em] text-foreground/35 uppercase"
+          transition={{ duration: 1, delay: 0.4 }}
+          className="mt-3 text-[10px] tracking-[0.4em] text-foreground/35 uppercase"
         >
           Music Videos · Commercials · Creative Direction
         </motion.p>
+
+        {/* Filter tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="flex items-center justify-center gap-2 mt-10"
+        >
+          {TABS.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`interactive px-5 py-2 text-[9px] tracking-[0.3em] uppercase transition-all duration-300
+                  ${active
+                    ? 'border border-primary text-primary bg-primary/10'
+                    : 'border border-foreground/15 text-foreground/40 hover:border-foreground/40 hover:text-foreground/70'
+                  }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </motion.div>
       </section>
 
-      {/* ── Music Videos ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5">
-        <SectionLabel>Featured Projects</SectionLabel>
+      {/* Tab content */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'music-videos' && (
+          <motion.section
+            key="music-videos"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5"
+          >
+            {/* 01 — Hero embed */}
+            <div className="mb-16 md:mb-24">
+              <VideoCard video={featured} large />
+            </div>
 
-        {/* 01 — Hero embed */}
-        <div className="mb-16 md:mb-24">
-          <VideoCard video={featured} large />
-        </div>
+            {/* 02 & 03 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 mb-16 md:mb-20">
+              {row2.map((v, i) => (
+                <VideoCard key={v.id} video={v} delay={i * 0.1} />
+              ))}
+            </div>
 
-        {/* 02 & 03 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 mb-16 md:mb-20">
-          {row2.map((v, i) => (
-            <VideoCard key={v.id} video={v} delay={i * 0.1} />
-          ))}
-        </div>
+            {/* 04 & 05 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+              {row3.map((v, i) => (
+                <VideoCard key={v.id} video={v} delay={i * 0.1} />
+              ))}
+            </div>
+          </motion.section>
+        )}
 
-        {/* 04 & 05 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-          {row3.map((v, i) => (
-            <VideoCard key={v.id} video={v} delay={i * 0.1} />
-          ))}
-        </div>
-      </section>
+        {activeTab === 'bts' && (
+          <motion.section
+            key="bts"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+              {BTS.map((v, i) => (
+                <VideoCard key={v.id} video={v} delay={i * 0.12} />
+              ))}
+            </div>
+          </motion.section>
+        )}
 
-      {/* ── BTS ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5">
-        <SectionLabel>Behind the Scenes</SectionLabel>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-          {BTS.map((v, i) => (
-            <VideoCard key={v.id} video={v} delay={i * 0.12} />
-          ))}
-        </div>
-      </section>
+        {activeTab === 'reels' && (
+          <motion.section
+            key="reels"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5 overflow-hidden"
+          >
+            <ReelsCarousel />
+          </motion.section>
+        )}
+      </AnimatePresence>
 
-      {/* ── Instagram Reels ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5 overflow-hidden">
-        <SectionLabel>Latest on Instagram</SectionLabel>
-        <ReelsCarousel />
-      </section>
-
-      {/* ── Team ── */}
+      {/* Team — always visible */}
       <TeamSection />
 
       <Footer />
