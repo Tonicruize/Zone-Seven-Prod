@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd ../.. && pnpm install && pnpm --filter @workspace/zone7 run build",
-  "outputDirectory": "dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
