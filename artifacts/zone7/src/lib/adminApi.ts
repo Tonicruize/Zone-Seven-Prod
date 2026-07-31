@@ -59,6 +59,21 @@ export async function createVideo(body: {
   }));
 }
 
+export async function updateVideo(id: number, body: {
+  title?: string;
+  videoType?: string;
+  storagePath?: string | null;
+  youtubeId?: string | null;
+  thumbnailPath?: string | null;
+  position?: number;
+}) {
+  return ok(await fetch(`${BASE}/admin/videos/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  }));
+}
+
 export async function deleteVideo(id: number) {
   return ok(await fetch(`${BASE}/admin/videos/${id}`, {
     method: 'DELETE',

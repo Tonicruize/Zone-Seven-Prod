@@ -275,10 +275,14 @@ export function WorkPage() {
       .then((r) => r.ok ? r.json() as Promise<ApiVideo[]> : Promise.resolve([]))
       .then((data) => {
         if (!data.length) return; // keep fallback
-        const mv = data.filter((v) => v.videoType === 'music-video').map(toVideoItem);
-        const bts = data.filter((v) => v.videoType === 'bts').map(toVideoItem);
+        const sorted = [...data].sort((a, b) => a.position - b.position);
+        const mv = sorted.filter((v) => v.videoType === 'music-video').map(toVideoItem);
+        const bts = sorted.filter((v) => v.videoType === 'bts').map(toVideoItem);
+        const rl = sorted.filter((v) => v.videoType === 'reels' && v.youtubeId)
+          .map((v) => ({ shortcode: v.youtubeId!, title: v.title }));
         if (mv.length) setMusicVideos(mv);
         if (bts.length) setBtsVideos(bts);
+        if (rl.length) setApiReels(rl);
       })
       .catch(() => {/* keep fallback */});
   }, []);
