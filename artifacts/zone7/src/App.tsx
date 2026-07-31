@@ -19,6 +19,9 @@ import { BeatsPage } from './pages/BeatsPage';
 import { AboutPage } from './pages/AboutPage';
 import { BookingPage } from './pages/BookingPage';
 import { WorkPage } from './pages/WorkPage';
+import { AdminLogin } from './pages/AdminLogin';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { getToken, clearToken } from './lib/adminApi';
 import NotFound from './pages/not-found';
 
 const queryClient = new QueryClient();
@@ -60,17 +63,26 @@ function HomePage() {
   );
 }
 
-/* Inner shell — lives inside WouterRouter so useLocation works */
+/* ── Admin panel — no preloader / nav ─────────────────────────────── */
+function AdminPanel() {
+  const [loggedIn, setLoggedIn] = useState(() => !!getToken());
+
+  function handleLogin() { setLoggedIn(true); }
+  function handleLogout() { clearToken(); setLoggedIn(false); }
+
+  return loggedIn
+    ? <AdminDashboard onLogout={handleLogout} />
+    : <AdminLogin onLogin={handleLogin} />;
+}
+
+/* ── Main app shell ──────────────────────────────────────────────── */
 function AppShell() {
   const [location] = useLocation();
   const [preloaderDone, setPreloaderDone] = useState(false);
 
   return (
     <>
-      {/* Preloader — remounts on every route change via key */}
       <Preloader key={location} onComplete={() => setPreloaderDone(true)} />
-
-      {/* Page content — rendered underneath, fades in after preloader wipes */}
       <motion.div
         key={`content-${location}`}
         variants={pageVariants}
@@ -99,7 +111,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-        <AppShell />
+        <Switch>
+          {/* Admin is standalone — no nav/preloader */}
+          <Route path="/admin" component={AdminPanel} />
+          {/* Everything else goes through the main shell */}
+          <Route component={AppShell} />
+        </Switch>
       </WouterRouter>
     </QueryClientProvider>
   );

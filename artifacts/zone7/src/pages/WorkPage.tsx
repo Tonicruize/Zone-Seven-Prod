@@ -1,20 +1,21 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Footer } from '../components/Footer';
+import { storageUrl } from '../lib/adminApi';
 
-/* ─── Data ─────────────────────────────────────────────────────────── */
+/* ─── Static fallback data ──────────────────────────────────────────── */
 
-const MUSIC_VIDEOS = [
-  { id: 'BddkwVLHAdA', num: '01', type: 'Music Video' },
-  { id: 'SBKcys4q-YA', num: '02', type: 'Music Video' },
-  { id: 'RM0BfYgD9vo', num: '03', type: 'Music Video' },
-  { id: '3koLYkFzVgk', num: '04', type: 'Music Video' },
-  { id: 'QtXj_1S6aOI', num: '05', type: 'Music Video' },
+const FALLBACK_MUSIC_VIDEOS = [
+  { youtubeId: 'BddkwVLHAdA', num: '01', title: 'Music Video 01' },
+  { youtubeId: 'SBKcys4q-YA', num: '02', title: 'Music Video 02' },
+  { youtubeId: 'RM0BfYgD9vo', num: '03', title: 'Music Video 03' },
+  { youtubeId: '3koLYkFzVgk', num: '04', title: 'Music Video 04' },
+  { youtubeId: 'QtXj_1S6aOI', num: '05', title: 'Music Video 05' },
 ];
 
-const BTS = [
-  { id: 'EnbfopuJrHM', num: '01', type: 'Behind the Scenes' },
-  { id: 'sEKn6OmkFBs', num: '02', type: 'Behind the Scenes' },
+const FALLBACK_BTS = [
+  { youtubeId: 'EnbfopuJrHM', num: '01', title: 'BTS 01' },
+  { youtubeId: 'sEKn6OmkFBs', num: '02', title: 'BTS 02' },
 ];
 
 const REELS = [
@@ -49,6 +50,37 @@ const TEAM = [
   },
 ];
 
+/* ─── API video shape ───────────────────────────────────────────────── */
+
+interface ApiVideo {
+  id: number;
+  title: string;
+  videoType: string; // "music-video" | "bts" | "reels"
+  storagePath: string | null;
+  youtubeId: string | null;
+  thumbnailPath: string | null;
+  position: number;
+}
+
+/** Normalised shape used inside this page */
+interface VideoItem {
+  key: string;
+  num: string;
+  title: string;
+  youtubeId: string | null;
+  storagePath: string | null;
+}
+
+function toVideoItem(v: ApiVideo, idx: number): VideoItem {
+  return {
+    key: String(v.id),
+    num: String(idx + 1).padStart(2, '0'),
+    title: v.title,
+    youtubeId: v.youtubeId,
+    storagePath: v.storagePath,
+  };
+}
+
 type Tab = 'music-videos' | 'bts' | 'reels';
 
 const TABS: { id: Tab; label: string }[] = [
@@ -81,15 +113,21 @@ function EmbedFrame({ id, title }: { id: string; title: string }) {
   );
 }
 
-function VideoCard({
-  video,
-  large = false,
-  delay = 0,
-}: {
-  video: (typeof MUSIC_VIDEOS)[number] | (typeof BTS)[number];
-  large?: boolean;
-  delay?: number;
-}) {
+function StorageVideoFrame({ path, title }: { path: string; title: string }) {
+  return (
+    <div className="relative w-full overflow-hidden bg-black" style={{ paddingTop: '56.25%' }}>
+      <video
+        src={storageUrl(path)}
+        title={title}
+        controls
+        preload="metadata"
+        className="absolute inset-0 w-full h-full object-contain"
+      />
+    </div>
+  );
+}
+
+function VideoCard({ video, large = false, delay = 0 }: { video: VideoItem; large?: boolean; delay?: number }) {
   return (
     <motion.div {...fadeUp(delay)}>
       <div className={`flex items-center justify-between border-t-2 ${large ? 'border-primary' : 'border-primary/50'} pt-4 mb-5`}>
@@ -97,10 +135,14 @@ function VideoCard({
           {video.num}
         </span>
         <span className="text-[9px] tracking-[0.35em] text-foreground/35 uppercase">
-          {video.type}
+          {video.title}
         </span>
       </div>
-      <EmbedFrame id={video.id} title={`${video.type} ${video.num}`} />
+      {video.storagePath
+        ? <StorageVideoFrame path={video.storagePath} title={video.title} />
+        : video.youtubeId
+          ? <EmbedFrame id={video.youtubeId} title={video.title} />
+          : null}
     </motion.div>
   );
 }
@@ -118,7 +160,6 @@ function ReelsCarousel() {
 
   return (
     <div className="relative">
-      {/* Scroll buttons */}
       <div className="hidden md:flex absolute -top-14 right-0 gap-3 z-10">
         {(['left', 'right'] as const).map((dir) => (
           <button
@@ -132,11 +173,9 @@ function ReelsCarousel() {
         ))}
       </div>
 
-      {/* Fade edges */}
       <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-      {/* Track */}
       <div
         ref={trackRef}
         className="flex gap-3 overflow-x-auto pb-4 scroll-smooth"
@@ -162,7 +201,6 @@ function ReelsCarousel() {
               scrolling="no"
               title={`Reel ${i + 1}`}
             />
-            {/* Hover overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300
                 text-[8px] tracking-[0.4em] uppercase text-white border border-white/60 px-4 py-2">
@@ -223,7 +261,29 @@ function TeamSection() {
 
 export function WorkPage() {
   const [activeTab, setActiveTab] = useState<Tab>('music-videos');
-  const [featured, ...rest] = MUSIC_VIDEOS;
+
+  // API state — falls back to hardcoded data if empty / errored
+  const [musicVideos, setMusicVideos] = useState<VideoItem[]>(
+    FALLBACK_MUSIC_VIDEOS.map((v, i) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
+  );
+  const [btsVideos, setBtsVideos] = useState<VideoItem[]>(
+    FALLBACK_BTS.map((v, i) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
+  );
+
+  useEffect(() => {
+    fetch('/api/videos')
+      .then((r) => r.ok ? r.json() as Promise<ApiVideo[]> : Promise.resolve([]))
+      .then((data) => {
+        if (!data.length) return; // keep fallback
+        const mv = data.filter((v) => v.videoType === 'music-video').map(toVideoItem);
+        const bts = data.filter((v) => v.videoType === 'bts').map(toVideoItem);
+        if (mv.length) setMusicVideos(mv);
+        if (bts.length) setBtsVideos(bts);
+      })
+      .catch(() => {/* keep fallback */});
+  }, []);
+
+  const [featured, ...rest] = musicVideos;
   const row2 = rest.slice(0, 2);
   const row3 = rest.slice(2);
 
@@ -287,24 +347,21 @@ export function WorkPage() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5"
           >
-            {/* 01 — Hero embed */}
-            <div className="mb-16 md:mb-24">
-              <VideoCard video={featured} large />
-            </div>
-
-            {/* 02 & 03 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 mb-16 md:mb-20">
-              {row2.map((v, i) => (
-                <VideoCard key={v.id} video={v} delay={i * 0.1} />
-              ))}
-            </div>
-
-            {/* 04 & 05 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-              {row3.map((v, i) => (
-                <VideoCard key={v.id} video={v} delay={i * 0.1} />
-              ))}
-            </div>
+            {featured && (
+              <div className="mb-16 md:mb-24">
+                <VideoCard video={featured} large />
+              </div>
+            )}
+            {row2.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 mb-16 md:mb-20">
+                {row2.map((v, i) => <VideoCard key={v.key} video={v} delay={i * 0.1} />)}
+              </div>
+            )}
+            {row3.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+                {row3.map((v, i) => <VideoCard key={v.key} video={v} delay={i * 0.1} />)}
+              </div>
+            )}
           </motion.section>
         )}
 
@@ -317,11 +374,13 @@ export function WorkPage() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-              {BTS.map((v, i) => (
-                <VideoCard key={v.id} video={v} delay={i * 0.12} />
-              ))}
-            </div>
+            {btsVideos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+                {btsVideos.map((v, i) => <VideoCard key={v.key} video={v} delay={i * 0.12} />)}
+              </div>
+            ) : (
+              <p className="text-[10px] tracking-[0.4em] text-foreground/25 uppercase">No BTS videos yet.</p>
+            )}
           </motion.section>
         )}
 
@@ -339,9 +398,7 @@ export function WorkPage() {
         )}
       </AnimatePresence>
 
-      {/* Team — always visible */}
       <TeamSection />
-
       <Footer />
     </main>
   );

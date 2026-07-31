@@ -1,13 +1,38 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { storageUrl } from '../lib/adminApi';
 
-const slots = [
+const SLOT_LAYOUT = [
   { col: 'md:col-span-7', size: 'aspect-[4/3]' },
   { col: 'md:col-span-5', size: 'aspect-square' },
   { col: 'md:col-span-6', size: 'aspect-[4/3]' },
   { col: 'md:col-span-6', size: 'aspect-square' },
 ];
 
+interface GalleryImage {
+  id: number;
+  storagePath: string;
+  altText: string | null;
+}
+
 export function BrandGallery() {
+  const [images, setImages] = useState<GalleryImage[]>([]);
+
+  useEffect(() => {
+    fetch('/api/gallery')
+      .then((r) => r.ok ? r.json() : Promise.resolve([]))
+      .then((data: GalleryImage[]) => setImages(data))
+      .catch(() => {/* silently stay empty */});
+  }, []);
+
+  // Always show 4 slots; fill with API images where available
+  const slots = SLOT_LAYOUT.map((layout, i) => ({
+    ...layout,
+    image: images[i] ?? null,
+  }));
+
+  const rows = [slots.slice(0, 2), slots.slice(2)];
+
   return (
     <section className="py-32 md:py-40 px-6 md:px-12 bg-background border-t border-foreground/5">
       <div className="max-w-screen-2xl mx-auto">
@@ -33,33 +58,32 @@ export function BrandGallery() {
           </motion.p>
         </div>
 
-        {/* Row 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mb-4 md:mb-6">
-          {slots.slice(0, 2).map((slot, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 1, delay: i * 0.12, ease: 'easeOut' }}
-              className={`${slot.col} ${slot.size} bg-foreground/5 border border-foreground/8`}
-            />
-          ))}
-        </div>
-
-        {/* Row 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
-          {slots.slice(2).map((slot, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }}
-              className={`${slot.col} ${slot.size} bg-foreground/5 border border-foreground/8`}
-            />
-          ))}
-        </div>
+        {rows.map((row, rowIdx) => (
+          <div
+            key={rowIdx}
+            className={`grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 ${rowIdx < rows.length - 1 ? 'mb-4 md:mb-6' : ''}`}
+          >
+            {row.map((slot, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 1, delay: i * 0.12, ease: 'easeOut' }}
+                className={`${slot.col} ${slot.size} bg-foreground/5 border border-foreground/8 overflow-hidden`}
+              >
+                {slot.image && (
+                  <img
+                    src={storageUrl(slot.image.storagePath)}
+                    alt={slot.image.altText ?? ''}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+              </motion.div>
+            ))}
+          </div>
+        ))}
 
       </div>
     </section>

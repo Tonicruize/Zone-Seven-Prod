@@ -149,3 +149,27 @@ a, button, [role="button"] {
 .text-display {
   font-family: var(--font-display);
 }
+
+/* Admin panel utilities */
+.admin-label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-foreground) 40%, transparent);
+  margin-bottom: 8px;
+}
+.admin-input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-foreground) 15%, transparent);
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--color-foreground);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.admin-input:focus {
+  border-color: color-mix(in srgb, var(--color-primary) 60%, transparent);
+}

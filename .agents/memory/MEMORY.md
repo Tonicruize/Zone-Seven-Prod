@@ -1,0 +1,1 @@
+- [Zone7 admin panel architecture](zone7-admin-architecture.md) — JWT auth, presigned GCS upload flow, works_videos + gallery_images schema, fallback data strategy.

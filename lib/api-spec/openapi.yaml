@@ -10,13 +10,20 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Admin authentication
+  - name: videos
+    description: Works videos
+  - name: gallery
+    description: Gallery images
+  - name: Storage
+    description: Object storage upload and serving endpoints.
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +31,307 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login with password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminToken"
+        "401":
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /videos:
+    get:
+      operationId: listVideos
+      tags: [videos]
+      summary: List all published works videos (public)
+      responses:
+        "200":
+          description: List of videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorksVideo"
+
+  /gallery:
+    get:
+      operationId: listGallery
+      tags: [gallery]
+      summary: List all gallery images (public)
+      responses:
+        "200":
+          description: List of gallery images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GalleryImage"
+
+  /admin/videos:
+    get:
+      operationId: adminListVideos
+      tags: [videos]
+      summary: Admin — list all videos
+      responses:
+        "200":
+          description: List of videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorksVideo"
+    post:
+      operationId: adminCreateVideo
+      tags: [videos]
+      summary: Admin — create a video entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorksVideoInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorksVideo"
+
+  /admin/videos/{id}:
+    patch:
+      operationId: adminUpdateVideo
+      tags: [videos]
+      summary: Admin — update a video entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorksVideoUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorksVideo"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+    delete:
+      operationId: adminDeleteVideo
+      tags: [videos]
+      summary: Admin — delete a video entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /admin/images:
+    get:
+      operationId: adminListImages
+      tags: [gallery]
+      summary: Admin — list all gallery images
+      responses:
+        "200":
+          description: List of images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GalleryImage"
+    post:
+      operationId: adminCreateImage
+      tags: [gallery]
+      summary: Admin — create a gallery image entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GalleryImageInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GalleryImage"
+
+  /admin/images/{id}:
+    patch:
+      operationId: adminUpdateImage
+      tags: [gallery]
+      summary: Admin — update a gallery image
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GalleryImageUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GalleryImage"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+    delete:
+      operationId: adminDeleteImage
+      tags: [gallery]
+      summary: Admin — delete a gallery image
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+        '400':
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /storage/public-objects/{filePath}:
+    get:
+      tags: [Storage]
+      operationId: getPublicObject
+      summary: Serve a public asset
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      summary: Serve an object entity
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Object not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +342,142 @@ components:
       required:
         - status
 
+    AdminLoginInput:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    AdminToken:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    WorksVideo:
+      type: object
+      required: [id, title, videoType, position, createdAt]
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        videoType:
+          type: string
+          description: "music-video | bts | reels"
+        storagePath:
+          type: ["string", "null"]
+          description: Object storage path for uploaded video files
+        youtubeId:
+          type: ["string", "null"]
+          description: YouTube video ID for embedded videos
+        thumbnailPath:
+          type: ["string", "null"]
+          description: Object storage path for thumbnail image
+        position:
+          type: number
+        createdAt:
+          type: string
+
+    WorksVideoInput:
+      type: object
+      required: [title, videoType]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        videoType:
+          type: string
+        storagePath:
+          type: ["string", "null"]
+        youtubeId:
+          type: ["string", "null"]
+        thumbnailPath:
+          type: ["string", "null"]
+        position:
+          type: number
+
+    WorksVideoUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        videoType:
+          type: string
+        storagePath:
+          type: ["string", "null"]
+        youtubeId:
+          type: ["string", "null"]
+        thumbnailPath:
+          type: ["string", "null"]
+        position:
+          type: number
+
+    GalleryImage:
+      type: object
+      required: [id, storagePath, position, createdAt]
+      properties:
+        id:
+          type: number
+        altText:
+          type: ["string", "null"]
+        storagePath:
+          type: string
+        position:
+          type: number
+        createdAt:
+          type: string
+
+    GalleryImageInput:
+      type: object
+      required: [storagePath]
+      properties:
+        storagePath:
+          type: string
+        altText:
+          type: ["string", "null"]
+        position:
+          type: number
+
+    GalleryImageUpdate:
+      type: object
+      properties:
+        altText:
+          type: ["string", "null"]
+        position:
+          type: number
+
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        size:
+          type: number
+
+        contentType:
+          type: string
+          minLength: 1
+
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri-reference
+        objectPath:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/UploadUrlRequest'
+
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
