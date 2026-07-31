@@ -26,7 +26,7 @@ export function AdminLogin({ onLogin }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="admin-page min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
           <p className="text-[9px] tracking-[0.5em] text-primary/60 uppercase mb-3">Zone7</p>

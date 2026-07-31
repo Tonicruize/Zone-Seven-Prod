@@ -140,8 +140,10 @@
 }
 
 
-/* Hide cursor on a tags since we force cursor:none */
-a, button, [role="button"] {
+/* Hide cursor on a tags since we force cursor:none (skip admin panel) */
+:not(.admin-page) a,
+:not(.admin-page) button,
+:not(.admin-page) [role="button"] {
   cursor: none !important;
 }
 

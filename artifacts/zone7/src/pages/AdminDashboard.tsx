@@ -34,7 +34,7 @@ export function AdminDashboard({ onLogout }: Props) {
   const [tab, setTab] = useState<'videos' | 'gallery'>('videos');
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="admin-page min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="border-b border-white/5 px-6 md:px-12 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
