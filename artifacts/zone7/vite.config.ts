@@ -5,17 +5,23 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
-// PORT is only needed for the dev/preview server — not during `vite build`.
-// Fall back to 3000 so build environments (e.g. Vercel CI) don't throw.
+// PORT is only needed for dev/preview servers — build doesn't bind a port.
 const rawPort = process.env.PORT;
+const isBuild = process.argv.includes('build');
+
+if (!isBuild && !rawPort) {
+  throw new Error(
+    'PORT environment variable is required but was not provided.',
+  );
+}
+
 const port = rawPort ? Number(rawPort) : 3000;
 
-if (Number.isNaN(port) || port <= 0) {
+if (rawPort && (Number.isNaN(port) || port <= 0)) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-// BASE_PATH controls the Vite `base` option. Defaults to "/" for standard
-// deployments; override with BASE_PATH env var when serving under a sub-path.
+// BASE_PATH defaults to '/' so `vite build` works without the env var.
 const basePath = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({

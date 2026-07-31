@@ -1,1 +1,2 @@
 - [Zone7 admin panel architecture](zone7-admin-architecture.md) — JWT auth, presigned GCS upload flow, works_videos + gallery_images schema, fallback data strategy.
+- [Zone7 Replit migration](zone7-replit-migration.md) — Already Vite+React (no Next.js conversion); artifacts registered via createArtifact after removing existing dir; DB schema pushed; codegen clean; one dead setApiReels call removed from WorkPage.tsx.
