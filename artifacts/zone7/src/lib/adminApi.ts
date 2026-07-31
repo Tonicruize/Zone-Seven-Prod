@@ -42,7 +42,7 @@ export async function login(password: string): Promise<string> {
 // ── Videos ────────────────────────────────────────────────────────────
 
 export async function listAdminVideos() {
-  return ok(await fetch(`${BASE}/admin/videos`, { headers: authHeaders() }));
+  return ok(await fetch(`${BASE}/admin/videos`, { headers: authHeaders(), cache: 'no-store' }));
 }
 
 export async function createVideo(body: {
@@ -69,7 +69,7 @@ export async function deleteVideo(id: number) {
 // ── Gallery ───────────────────────────────────────────────────────────
 
 export async function listAdminImages() {
-  return ok(await fetch(`${BASE}/admin/images`, { headers: authHeaders() }));
+  return ok(await fetch(`${BASE}/admin/images`, { headers: authHeaders(), cache: 'no-store' }));
 }
 
 export async function createImage(body: { storagePath: string; altText?: string | null }) {

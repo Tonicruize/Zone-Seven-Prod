@@ -114,6 +114,10 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* Custom cursor — disabled on admin pages */
+  html:not(:has(.admin-page)) * {
     cursor: none !important;
   }
 
@@ -140,11 +144,10 @@
 }
 
 
-/* Hide cursor on a tags since we force cursor:none (skip admin panel) */
-:not(.admin-page) a,
-:not(.admin-page) button,
-:not(.admin-page) [role="button"] {
-  cursor: none !important;
+/* Explicit cursor restore inside admin panel (belt-and-suspenders) */
+.admin-page,
+.admin-page * {
+  cursor: auto !important;
 }
 
 /* Utilities for typography */
