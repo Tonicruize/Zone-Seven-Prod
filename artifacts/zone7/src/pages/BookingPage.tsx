@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-// ─── Formspree setup ────────────────────────────────────────────────────────
-// 1. Go to https://formspree.io and create a free account
-// 2. Create a new form and copy the form ID (the part after /f/)
-// 3. Replace YOUR_FORM_ID below with your actual ID
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
-// ────────────────────────────────────────────────────────────────────────────
+const CONTACT_ENDPOINT = `${import.meta.env.BASE_URL}api/contact`;
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -66,7 +61,7 @@ export function BookingPage() {
     e.preventDefault();
     setStatus('submitting');
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
+      const res = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(values),

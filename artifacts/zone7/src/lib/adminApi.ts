@@ -102,6 +102,12 @@ export async function deleteImage(id: number) {
   }));
 }
 
+// ── Bookings ──────────────────────────────────────────────────────────
+
+export async function listAdminBookings() {
+  return ok(await fetch(`${BASE}/admin/bookings`, { headers: authHeaders(), cache: 'no-store' }));
+}
+
 // ── Storage upload (presigned URL flow) ─────────────────────────────
 
 export async function requestUploadUrl(file: File): Promise<{ uploadURL: string; objectPath: string }> {

@@ -3,6 +3,7 @@ import {
   clearToken,
   listAdminVideos, createVideo, updateVideo, deleteVideo,
   listAdminImages, createImage, deleteImage,
+  listAdminBookings,
   uploadFile, storageUrl,
 } from '../lib/adminApi';
 
@@ -33,8 +34,15 @@ interface ImageEntry {
 
 interface Props { onLogout: () => void; }
 
+const TAB_LABELS = {
+  videos: 'Music / BTS',
+  reels: 'Reels',
+  gallery: 'Gallery',
+  bookings: 'Inquiries',
+} as const;
+
 export function AdminDashboard({ onLogout }: Props) {
-  const [tab, setTab] = useState<'videos' | 'reels' | 'gallery'>('videos');
+  const [tab, setTab] = useState<'videos' | 'reels' | 'gallery' | 'bookings'>('videos');
 
   return (
     <div className="admin-page min-h-screen bg-background text-foreground">
@@ -55,14 +63,14 @@ export function AdminDashboard({ onLogout }: Props) {
 
       {/* Tabs */}
       <div className="border-b border-white/5 px-6 md:px-12 flex gap-8">
-        {(['videos', 'reels', 'gallery'] as const).map((t) => (
+        {(['videos', 'reels', 'gallery', 'bookings'] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`py-4 text-[9px] tracking-[0.3em] uppercase transition-colors border-b-2 -mb-px
               ${tab === t ? 'text-primary border-primary' : 'text-foreground/35 border-transparent hover:text-foreground/60'}`}
           >
-            {t === 'videos' ? 'Music / BTS' : t === 'reels' ? 'Reels' : 'Gallery'}
+            {TAB_LABELS[t]}
           </button>
         ))}
       </div>
@@ -72,6 +80,7 @@ export function AdminDashboard({ onLogout }: Props) {
         {tab === 'videos' && <VideosTab />}
         {tab === 'reels' && <ReelsTab />}
         {tab === 'gallery' && <GalleryTab />}
+        {tab === 'bookings' && <BookingsTab />}
       </div>
     </div>
   );
@@ -495,12 +504,7 @@ function GalleryTab() {
 
   async function handleImagePosition(id: number, position: number) {
     try {
-      await fetch(`/api/admin/images/${id}`, {
-        method: 'PATCH',
-        headers: { Authorization: `Bearer ${localStorage.getItem('zone7_admin_token')}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ position }),
-        cache: 'no-store',
-      });
+      await updateVideo(id, { position }); // reuse the same PATCH helper (auth headers included)
       await load();
     } catch { /* ignore */ }
   }
@@ -562,6 +566,107 @@ function GalleryTab() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+/* ─── Bookings (Inquiries) Tab ─────────────────────────────────────── */
+
+interface BookingEntry {
+  id: number;
+  name: string;
+  email: string;
+  projectType: string;
+  budget: string | null;
+  timeline: string | null;
+  message: string;
+  createdAt: string;
+}
+
+function BookingsTab() {
+  const [bookings, setBookings] = useState<BookingEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState<number | null>(null);
+
+  useEffect(() => {
+    listAdminBookings()
+      .then((data) => setBookings(data ?? []))
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Failed to load'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  function fmt(iso: string) {
+    return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  return (
+    <div>
+      <p className="text-[9px] tracking-[0.4em] uppercase text-foreground/30 mb-5">
+        {bookings.length} inquiry{bookings.length !== 1 ? 's' : ''}
+      </p>
+      {loading ? (
+        <p className="text-[10px] text-foreground/30 tracking-widest animate-pulse">Loading…</p>
+      ) : error ? (
+        <p className="text-[10px] text-red-400">{error}</p>
+      ) : bookings.length === 0 ? (
+        <p className="text-[10px] text-foreground/25 tracking-widest">No inquiries yet.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {bookings.map((b) => (
+            <div key={b.id} className="border border-white/8">
+              {/* Row */}
+              <button
+                onClick={() => setExpanded(expanded === b.id ? null : b.id)}
+                className="w-full flex items-center gap-4 p-4 text-left hover:bg-white/[0.02] transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-foreground font-medium">{b.name}</p>
+                  <p className="text-[9px] tracking-[0.2em] text-foreground/40 mt-0.5">{b.email}</p>
+                </div>
+                <span className="text-[8px] tracking-[0.3em] uppercase text-primary/60 shrink-0">{b.projectType}</span>
+                {b.budget && <span className="text-[8px] tracking-[0.2em] text-foreground/30 shrink-0 hidden md:block">{b.budget}</span>}
+                <span className="text-[8px] tracking-[0.2em] text-foreground/25 shrink-0">{fmt(b.createdAt)}</span>
+                <span className="text-[10px] text-foreground/25 shrink-0">{expanded === b.id ? '▲' : '▼'}</span>
+              </button>
+
+              {/* Expanded detail */}
+              {expanded === b.id && (
+                <div className="px-4 pb-5 pt-0 border-t border-white/5 flex flex-col gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                    {b.timeline && (
+                      <div>
+                        <p className="text-[8px] tracking-[0.35em] uppercase text-foreground/25 mb-1">Timeline</p>
+                        <p className="text-[11px] text-foreground/70">{b.timeline}</p>
+                      </div>
+                    )}
+                    {b.budget && (
+                      <div>
+                        <p className="text-[8px] tracking-[0.35em] uppercase text-foreground/25 mb-1">Budget</p>
+                        <p className="text-[11px] text-foreground/70">{b.budget}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-[8px] tracking-[0.35em] uppercase text-foreground/25 mb-1">Received</p>
+                      <p className="text-[11px] text-foreground/70">{fmt(b.createdAt)}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[8px] tracking-[0.35em] uppercase text-foreground/25 mb-1">Message</p>
+                    <p className="text-[11px] text-foreground/60 leading-relaxed whitespace-pre-wrap">{b.message}</p>
+                  </div>
+                  <a
+                    href={`mailto:${b.email}?subject=Re: ${encodeURIComponent(b.projectType)} — Zone7`}
+                    className="self-start text-[8px] tracking-[0.3em] uppercase border border-primary/30 text-primary/70 px-4 py-2 hover:bg-primary/10 hover:border-primary/60 transition-all"
+                  >
+                    Reply via Email ↗
+                  </a>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
