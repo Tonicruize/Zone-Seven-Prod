@@ -1,22 +1,44 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, ShoppingCart, Heart, Filter } from 'lucide-react';
 import logoOutline from '@assets/new_z7_logo2_1785000829580.png';
 import multicolor from '@assets/Z7_MULTICOLOR_OTHERS_1785000865556.png';
 
-const GENRES = ['ALL', 'TRAP', 'AFROBEATS', 'DRILL', 'R&B', 'HIP HOP'];
+/* ─── Types ──────────────────────────────────────────────────────── */
 
-const BEATS = [
-  { id: 1, title: 'NIGHT VISION', genre: 'TRAP', bpm: 140, key: 'F# Minor', price: '$29.99', tags: ['dark', 'melodic'], bars: [4,7,5,9,6,8,3,7,5,9,6,4,8,5,7,3,6,9,4,7,5,8,6,3,9,5,7,4,8,6] },
-  { id: 2, title: 'GOLDEN ERA', genre: 'HIP HOP', bpm: 93, key: 'G Major', price: '$24.99', tags: ['boom bap', 'soulful'], bars: [6,3,8,5,9,4,7,6,3,8,5,9,4,7,6,3,8,5,9,4,7,6,3,8,5,9,4,7,6,3] },
-  { id: 3, title: 'AFRO WAVE', genre: 'AFROBEATS', bpm: 105, key: 'A Major', price: '$34.99', tags: ['vibrant', 'danceable'], bars: [5,9,6,4,8,7,3,9,5,6,4,8,7,3,9,5,6,4,8,7,3,9,5,6,4,8,7,3,9,5] },
-  { id: 4, title: 'DARK MATTER', genre: 'DRILL', bpm: 145, key: 'D Minor', price: '$29.99', tags: ['aggressive', 'heavy'], bars: [8,3,6,9,4,7,5,3,8,6,9,4,7,5,3,8,6,9,4,7,5,3,8,6,9,4,7,5,3,8] },
-  { id: 5, title: 'VELVET SOUL', genre: 'R&B', bpm: 78, key: 'Bb Minor', price: '$24.99', tags: ['smooth', 'sultry'], bars: [3,7,5,9,6,4,8,7,3,5,9,6,4,8,7,3,5,9,6,4,8,7,3,5,9,6,4,8,7,3] },
-  { id: 6, title: 'ZONE SEVEN', genre: 'TRAP', bpm: 138, key: 'C Minor', price: '$39.99', tags: ['cinematic', 'signature'], bars: [9,5,7,3,8,6,4,5,9,7,3,8,6,4,5,9,7,3,8,6,4,5,9,7,3,8,6,4,5,9] },
-  { id: 7, title: 'LAGOS NIGHTS', genre: 'AFROBEATS', bpm: 112, key: 'E Major', price: '$34.99', tags: ['euphoric', 'energetic'], bars: [4,8,6,5,9,3,7,8,4,6,5,9,3,7,8,4,6,5,9,3,7,8,4,6,5,9,3,7,8,4] },
-  { id: 8, title: 'SMOKE & MIRRORS', genre: 'HIP HOP', bpm: 87, key: 'F Minor', price: '$24.99', tags: ['jazzy', 'introspective'], bars: [5,3,9,6,4,8,7,3,5,9,6,4,8,7,3,5,9,6,4,8,7,3,5,9,6,4,8,7,3,5] },
-  { id: 9, title: 'COLD FRONT', genre: 'DRILL', bpm: 142, key: 'A Minor', price: '$29.99', tags: ['icy', 'hard'], bars: [7,4,8,3,9,5,6,4,7,8,3,9,5,6,4,7,8,3,9,5,6,4,7,8,3,9,5,6,4,7] },
-];
+interface ApiBeat {
+  id: number;
+  title: string;
+  genre: string;
+  bpm: number;
+  key: string | null;
+  price: string | null;
+  tags: string[] | null;
+  storagePath: string | null;
+  position: number;
+}
+
+interface Beat extends ApiBeat {
+  bars: number[];
+}
+
+/* ─── Waveform bars — deterministic from beat id ─────────────────── */
+
+function generateBars(seed: number): number[] {
+  const out: number[] = [];
+  let s = (seed * 1664525 + 1013904223) >>> 0;
+  for (let i = 0; i < 30; i++) {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    out.push((s % 9) + 1);
+  }
+  return out;
+}
+
+function toBeat(b: ApiBeat): Beat {
+  return { ...b, bars: generateBars(b.id) };
+}
+
+/* ─── Components ──────────────────────────────────────────────────── */
 
 function Waveform({ bars, isPlaying, isActive }: { bars: number[]; isPlaying: boolean; isActive: boolean }) {
   return (
@@ -52,7 +74,7 @@ function BeatCard({
   isActive,
   onPlay,
 }: {
-  beat: (typeof BEATS)[0];
+  beat: Beat;
   index: number;
   isPlaying: boolean;
   isActive: boolean;
@@ -72,7 +94,6 @@ function BeatCard({
           : 'border-foreground/5 bg-card/30 hover:border-foreground/15 hover:bg-card/60'
       }`}
       onClick={() => onPlay(beat.id)}
-      data-testid={`card-beat-${beat.id}`}
     >
       {/* Beat number */}
       <span className="absolute top-6 right-6 text-xs text-muted-foreground/40 font-mono tracking-widest">
@@ -90,7 +111,6 @@ function BeatCard({
               ? 'border-primary bg-primary/10 text-primary'
               : 'border-foreground/15 text-muted-foreground group-hover:border-primary/40 group-hover:text-foreground'
           }`}
-          data-testid={`button-play-${beat.id}`}
         >
           {isPlaying && isActive ? <Pause size={16} /> : <Play size={16} className="ml-0.5" />}
         </motion.button>
@@ -108,13 +128,20 @@ function BeatCard({
 
           <div className="flex items-center gap-6 text-[11px] tracking-widest text-muted-foreground uppercase">
             <span>{beat.bpm} BPM</span>
-            <span className="text-foreground/10">|</span>
-            <span>{beat.key}</span>
-            {beat.tags.map((tag) => (
+            {beat.key && (
+              <>
+                <span className="text-foreground/10">|</span>
+                <span>{beat.key}</span>
+              </>
+            )}
+            {beat.tags?.map((tag) => (
               <span key={tag} className="hidden md:inline text-foreground/25">
                 {tag}
               </span>
             ))}
+            {beat.storagePath && (
+              <span className="text-primary/40 text-[9px]">▶ audio</span>
+            )}
           </div>
         </div>
 
@@ -130,19 +157,19 @@ function BeatCard({
             whileTap={{ scale: 0.9 }}
             onClick={(e) => { e.stopPropagation(); setLiked(!liked); }}
             className={`transition-colors duration-300 ${liked ? 'text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-            data-testid={`button-like-${beat.id}`}
           >
             <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
           </motion.button>
 
-          <span className="text-xs font-mono text-muted-foreground">{beat.price}</span>
+          {beat.price && (
+            <span className="text-xs font-mono text-muted-foreground">{beat.price}</span>
+          )}
 
           <motion.button
             whileHover={{ scale: 1.05, backgroundColor: 'rgba(212,180,131,0.15)' }}
             whileTap={{ scale: 0.95 }}
             onClick={(e) => e.stopPropagation()}
             className="border border-primary/40 text-primary px-4 py-2 text-[10px] tracking-widest uppercase hover:border-primary transition-all duration-300 flex items-center gap-2"
-            data-testid={`button-buy-${beat.id}`}
           >
             <ShoppingCart size={11} />
             BUY
@@ -153,12 +180,48 @@ function BeatCard({
   );
 }
 
+/* ─── Page ────────────────────────────────────────────────────────── */
+
 export function BeatsPage() {
+  const [beats, setBeats] = useState<Beat[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeGenre, setActiveGenre] = useState('ALL');
   const [activeId, setActiveId] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const filtered = activeGenre === 'ALL' ? BEATS : BEATS.filter((b) => b.genre === activeGenre);
+  useEffect(() => {
+    fetch('/api/beats')
+      .then((r) => r.ok ? r.json() as Promise<ApiBeat[]> : Promise.resolve([]))
+      .then((data) => setBeats(data.map(toBeat)))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  /* ── Audio playback ─────────────────────────────────────────────── */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const beat = beats.find((b) => b.id === activeId);
+    if (!beat?.storagePath) {
+      audio.pause();
+      return;
+    }
+    const url = `/api/storage${beat.storagePath}`;
+    if (audio.src !== url) {
+      audio.src = url;
+      audio.load();
+    }
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  }, [activeId, isPlaying, beats]);
+
+  /* ── Filter ─────────────────────────────────────────────────────── */
+  const genres = ['ALL', ...Array.from(new Set(beats.map((b) => b.genre))).sort()];
+  const filtered = activeGenre === 'ALL' ? beats : beats.filter((b) => b.genre === activeGenre);
 
   const handlePlay = (id: number) => {
     if (activeId === id) {
@@ -169,13 +232,17 @@ export function BeatsPage() {
     }
   };
 
+  const activeBeat = beats.find((b) => b.id === activeId);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Hidden audio element */}
+      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+
       {/* Hero */}
       <section className="relative pt-44 md:pt-52 pb-20 md:pb-32 px-6 md:px-12 overflow-hidden">
         <div className="grain-overlay" />
 
-        {/* Background logo watermark */}
         <motion.img
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 0.04, scale: 1 }}
@@ -216,7 +283,7 @@ export function BeatsPage() {
         </div>
       </section>
 
-      {/* Divider with multicolor graphic */}
+      {/* Divider */}
       <div className="relative h-32 overflow-hidden flex items-center justify-center border-y border-foreground/5">
         <motion.img
           initial={{ opacity: 0 }}
@@ -241,7 +308,7 @@ export function BeatsPage() {
       <section className="px-6 md:px-12 py-12 border-b border-foreground/5">
         <div className="max-w-screen-xl mx-auto flex items-center gap-3 flex-wrap">
           <Filter size={12} className="text-muted-foreground mr-2" />
-          {GENRES.map((genre) => (
+          {genres.map((genre) => (
             <motion.button
               key={genre}
               whileHover={{ scale: 1.03 }}
@@ -252,7 +319,6 @@ export function BeatsPage() {
                   ? 'border border-primary text-primary bg-primary/5'
                   : 'border border-foreground/10 text-muted-foreground hover:border-foreground/25 hover:text-foreground'
               }`}
-              data-testid={`button-genre-${genre.toLowerCase()}`}
             >
               {genre}
             </motion.button>
@@ -266,24 +332,34 @@ export function BeatsPage() {
       {/* Beat List */}
       <section className="px-6 md:px-12 py-8 pb-32">
         <div className="max-w-screen-xl mx-auto flex flex-col gap-2">
-          <AnimatePresence mode="wait">
-            {filtered.map((beat, i) => (
-              <BeatCard
-                key={beat.id}
-                beat={beat}
-                index={i}
-                isPlaying={isPlaying}
-                isActive={activeId === beat.id}
-                onPlay={handlePlay}
-              />
-            ))}
-          </AnimatePresence>
+          {loading ? (
+            <p className="text-[10px] tracking-[0.4em] text-foreground/25 uppercase animate-pulse py-12 text-center">
+              Loading beats…
+            </p>
+          ) : filtered.length === 0 ? (
+            <p className="text-[10px] tracking-[0.4em] text-foreground/25 uppercase py-12 text-center">
+              No beats yet — check back soon.
+            </p>
+          ) : (
+            <AnimatePresence mode="wait">
+              {filtered.map((beat, i) => (
+                <BeatCard
+                  key={beat.id}
+                  beat={beat}
+                  index={i}
+                  isPlaying={isPlaying}
+                  isActive={activeId === beat.id}
+                  onPlay={handlePlay}
+                />
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </section>
 
       {/* Now Playing Bar */}
       <AnimatePresence>
-        {activeId !== null && (
+        {activeId !== null && activeBeat && (
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -293,7 +369,7 @@ export function BeatsPage() {
           >
             {/* Mini waveform */}
             <div className="hidden md:flex items-center gap-[2px] h-6 flex-shrink-0">
-              {BEATS.find((b) => b.id === activeId)?.bars.slice(0, 16).map((h, i) => (
+              {activeBeat.bars.slice(0, 16).map((h, i) => (
                 <motion.div
                   key={i}
                   className="w-[2px] rounded-full bg-primary"
@@ -315,17 +391,19 @@ export function BeatsPage() {
 
             <div className="flex-1 min-w-0">
               <p className="text-display text-xs tracking-[0.2em] text-foreground font-bold uppercase truncate">
-                {BEATS.find((b) => b.id === activeId)?.title}
+                {activeBeat.title}
               </p>
               <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-0.5">
-                {BEATS.find((b) => b.id === activeId)?.genre} · {BEATS.find((b) => b.id === activeId)?.bpm} BPM
+                {activeBeat.genre} · {activeBeat.bpm} BPM
+                {!activeBeat.storagePath && (
+                  <span className="ml-2 text-foreground/20">· no audio file</span>
+                )}
               </p>
             </div>
 
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="flex-shrink-0 w-10 h-10 rounded-full border border-primary flex items-center justify-center text-primary hover:bg-primary/10 transition-colors duration-300"
-              data-testid="button-player-playpause"
             >
               {isPlaying ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
             </button>
@@ -333,7 +411,6 @@ export function BeatsPage() {
             <button
               onClick={() => { setActiveId(null); setIsPlaying(false); }}
               className="flex-shrink-0 text-muted-foreground/40 hover:text-muted-foreground transition-colors duration-300 text-xs tracking-widest uppercase"
-              data-testid="button-player-close"
             >
               Close
             </button>

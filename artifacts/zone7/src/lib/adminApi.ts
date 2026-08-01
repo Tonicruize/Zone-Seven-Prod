@@ -108,6 +108,45 @@ export async function listAdminBookings() {
   return ok(await fetch(`${BASE}/admin/bookings`, { headers: authHeaders(), cache: 'no-store' }));
 }
 
+// ── Beats ──────────────────────────────────────────────────────────────
+
+export async function listAdminBeats() {
+  return ok(await fetch(`${BASE}/admin/beats`, { headers: authHeaders(), cache: 'no-store' }));
+}
+
+export async function createBeat(body: {
+  title: string;
+  genre: string;
+  bpm: number;
+  key?: string | null;
+  price?: string | null;
+  tags?: string[];
+  storagePath?: string | null;
+}) {
+  return ok(await fetch(`${BASE}/admin/beats`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  }));
+}
+
+export async function deleteBeat(id: number) {
+  return ok(await fetch(`${BASE}/admin/beats/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  }));
+}
+
+// ── Images (position update) ───────────────────────────────────────────
+
+export async function updateImage(id: number, body: { position?: number; altText?: string | null }) {
+  return ok(await fetch(`${BASE}/admin/images/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  }));
+}
+
 // ── Storage upload (presigned URL flow) ─────────────────────────────
 
 export async function requestUploadUrl(file: File): Promise<{ uploadURL: string; objectPath: string }> {

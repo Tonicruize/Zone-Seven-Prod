@@ -18,11 +18,17 @@ const FALLBACK_BTS = [
   { youtubeId: 'sEKn6OmkFBs', num: '02', title: 'BTS 02' },
 ];
 
-const REELS = [
+const FALLBACK_REELS: VideoItem[] = [
   'DR1LZB9DFUR', 'DRys1ZWDCzQ', 'DV76W5HCMEf', 'DVEmCWgiOJY',
   'DQbb0a8jKcu', 'DRHvF7IjLwi', 'DRC17ekDAYQ', 'DQUf5vMDEs4',
   'DQABE88Ak0O', 'DTtCI61Db2f', 'DVd0N35jDbg', 'DVbMNhqjQLN',
-];
+].map((shortcode, i) => ({
+  key: shortcode,
+  num: String(i + 1).padStart(2, '0'),
+  title: `Reel ${i + 1}`,
+  youtubeId: shortcode,
+  storagePath: null,
+}));
 
 const TEAM = [
   {
@@ -264,11 +270,12 @@ export function WorkPage() {
 
   // API state — falls back to hardcoded data if empty / errored
   const [musicVideos, setMusicVideos] = useState<VideoItem[]>(
-    FALLBACK_MUSIC_VIDEOS.map((v, i) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
+    FALLBACK_MUSIC_VIDEOS.map((v) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
   );
   const [btsVideos, setBtsVideos] = useState<VideoItem[]>(
-    FALLBACK_BTS.map((v, i) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
+    FALLBACK_BTS.map((v) => ({ key: v.youtubeId, num: v.num, title: v.title, youtubeId: v.youtubeId, storagePath: null }))
   );
+  const [reels, setReels] = useState<VideoItem[]>(FALLBACK_REELS);
 
   useEffect(() => {
     fetch('/api/videos')
@@ -278,8 +285,10 @@ export function WorkPage() {
         const sorted = [...data].sort((a, b) => a.position - b.position);
         const mv = sorted.filter((v) => v.videoType === 'music-video').map(toVideoItem);
         const bts = sorted.filter((v) => v.videoType === 'bts').map(toVideoItem);
+        const rl = sorted.filter((v) => v.videoType === 'reels').map(toVideoItem);
         if (mv.length) setMusicVideos(mv);
         if (bts.length) setBtsVideos(bts);
+        if (rl.length) setReels(rl);
       })
       .catch(() => {/* keep fallback */});
   }, []);

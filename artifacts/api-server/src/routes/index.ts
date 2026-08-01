@@ -5,6 +5,7 @@ import videosRouter from "./videos";
 import galleryRouter from "./gallery";
 import storageRouter from "./storage";
 import contactRouter from "./contact";
+import beatsRouter from "./beats";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(videosRouter);
 router.use(galleryRouter);
 router.use(storageRouter);
 router.use(contactRouter);
+router.use(beatsRouter);
 
 export default router;
