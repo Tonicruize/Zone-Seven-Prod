@@ -1,6 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "Zone7"
+description = "Zone7 is a cinematic production house portfolio app showcasing music videos, commercials, behind-the-scenes content, and brand collaborations. It features an admin panel for content management, booking flows, and a luxury dark aesthetic reflecting the brand's creative direction."
 version = "1.0.0"
 id = "artifacts/zone7"
 router = "path"

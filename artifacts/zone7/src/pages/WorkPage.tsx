@@ -155,7 +155,7 @@ function VideoCard({ video, large = false, delay = 0 }: { video: VideoItem; larg
 
 /* ─── Instagram Reel Carousel ───────────────────────────────────────── */
 
-function ReelsCarousel() {
+function ReelsCarousel({ reels }: { reels: VideoItem[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: 'left' | 'right') => {
@@ -187,34 +187,62 @@ function ReelsCarousel() {
         className="flex gap-3 overflow-x-auto pb-4 scroll-smooth"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {REELS.map((shortcode, i) => (
-          <motion.a
-            key={shortcode}
-            href={`https://www.instagram.com/reel/${shortcode}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: Math.min(i * 0.05, 0.4) }}
-            className="interactive flex-shrink-0 relative overflow-hidden group"
-            style={{ width: 200, height: 355 }}
-          >
-            <iframe
-              src={`https://www.instagram.com/reel/${shortcode}/embed/`}
-              className="w-full h-full border-0 pointer-events-none"
-              loading="lazy"
-              scrolling="no"
-              title={`Reel ${i + 1}`}
-            />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                text-[8px] tracking-[0.4em] uppercase text-white border border-white/60 px-4 py-2">
-                View ↗
-              </span>
-            </div>
-          </motion.a>
-        ))}
+        {reels.map((item, i) => {
+          if (item.storagePath) {
+            // Uploaded video — render inline player, no external link
+            return (
+              <motion.div
+                key={item.key}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: Math.min(i * 0.05, 0.4) }}
+                className="flex-shrink-0 relative overflow-hidden bg-black"
+                style={{ width: 200, height: 355 }}
+              >
+                <video
+                  src={storageUrl(item.storagePath)}
+                  className="w-full h-full object-cover"
+                  controls
+                  preload="metadata"
+                  title={item.title}
+                />
+              </motion.div>
+            );
+          }
+          if (item.youtubeId) {
+            // Instagram shortcode — embed and link
+            return (
+              <motion.a
+                key={item.key}
+                href={`https://www.instagram.com/reel/${item.youtubeId}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: Math.min(i * 0.05, 0.4) }}
+                className="interactive flex-shrink-0 relative overflow-hidden group"
+                style={{ width: 200, height: 355 }}
+              >
+                <iframe
+                  src={`https://www.instagram.com/reel/${item.youtubeId}/embed/`}
+                  className="w-full h-full border-0 pointer-events-none"
+                  loading="lazy"
+                  scrolling="no"
+                  title={item.title}
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    text-[8px] tracking-[0.4em] uppercase text-white border border-white/60 px-4 py-2">
+                    View ↗
+                  </span>
+                </div>
+              </motion.a>
+            );
+          }
+          return null; // no source — omit
+        })}
       </div>
     </div>
   );
@@ -403,7 +431,7 @@ export function WorkPage() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="px-6 md:px-12 lg:px-20 py-20 md:py-28 border-b border-foreground/5 overflow-hidden"
           >
-            <ReelsCarousel />
+            <ReelsCarousel reels={reels} />
           </motion.section>
         )}
       </AnimatePresence>
